@@ -1,0 +1,26 @@
+# =============================================================================
+# Nixpacks configuration for Coolify & Container Platforms
+# =============================================================================
+
+[phases.setup]
+nixPkgs = ["nodejs_24", "python3", "gnumake", "gcc"]
+
+[phases.install]
+cmds = [
+  "npm ci --ignore-scripts",
+  "npm rebuild better-sqlite3"
+]
+
+[phases.build]
+cmds = [
+  "npm run build"
+]
+
+[start]
+cmd = "node scripts/start.js"
+
+[variables]
+NODE_ENV = "production"
+YOUPI_MODE = "localhost"
+YOUPI_ALLOW_LOCALHOST_MODE = "true"
+YOUPI_BIND_HOST = "0.0.0.0"

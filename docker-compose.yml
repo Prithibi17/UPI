@@ -46,13 +46,11 @@ services:
       - "6100:6100"   # Payment Core REST API
       - "7000:7000"   # Checkout Portal
       - "5000:5000"   # Coin Wallet Demo Store
-      # Operator surfaces. Bound to loopback on the host: the Merchant Admin holds admin
-      # credentials and the Control Center can start/stop every service and stream their
-      # logs. Publish them on 0.0.0.0 only if the host is not directly reachable.
-      - "127.0.0.1:6001:6001"   # Merchant Admin Dashboard
-      - "127.0.0.1:6002:6002"   # Android SMS Observer
-      - "127.0.0.1:6003:6003"   # Gmail Observer
-      - "127.0.0.1:8090:8090"   # Process Supervisor Daemon
+      # Operator surfaces. Expose for container platforms (Coolify / reverse proxy).
+      - "6001:6001"   # Merchant Admin Dashboard
+      - "6002:6002"   # Android SMS Observer
+      - "6003:6003"   # Gmail Observer
+      - "8090:8090"   # Process Supervisor Daemon
     volumes:
       - youpi-data:/app/data
     healthcheck:

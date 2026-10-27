@@ -55,7 +55,8 @@ RUN npm prune --omit=dev
 # ── Stage 3: Runner ─────────────────────────────────────────────────────────
 FROM base AS runner
 ENV NODE_ENV=production
-ENV YOUPI_MODE=production
+ENV YOUPI_MODE=localhost
+ENV YOUPI_ALLOW_LOCALHOST_MODE=true
 ENV YOUPI_BIND_HOST=0.0.0.0
 
 WORKDIR /app

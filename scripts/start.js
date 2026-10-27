@@ -28,7 +28,8 @@ try {
 // fallback.
 const allowLocalhostMode = String(process.env.YOUPI_ALLOW_LOCALHOST_MODE || '').trim().toLowerCase() === 'true';
 const requestedMode = String(process.env.YOUPI_MODE || '').trim().toLowerCase();
-const runInLocalhostMode = allowLocalhostMode && requestedMode === 'localhost';
+const domainFromEnv = (process.env.CLOUDFLARE_DOMAIN || '').trim();
+const runInLocalhostMode = allowLocalhostMode && (requestedMode === 'localhost' || (!domainFromEnv && requestedMode !== 'production'));
 
 if (runInLocalhostMode) {
   console.log('\n====================================================');
