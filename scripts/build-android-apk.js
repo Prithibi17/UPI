@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { execSync } from 'node:child_process';
+import { execSync, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { syncAndroidAllowlist } from './sync-android-allowlist.js';
 
@@ -140,10 +140,10 @@ try {
   const d8ArgFile = path.join(WORK_DIR, 'd8_inputs.txt');
   fs.writeFileSync(d8ArgFile, [...classFiles, ...libJars].join('\n'), 'utf8');
 
-  const d8Cmd = isWin
-    ? `cmd.exe /c ""${D8}" --lib "${ANDROID_JAR}" --output "${WORK_DIR}" @"${d8ArgFile}""`
-    : `"${D8}" --lib "${ANDROID_JAR}" --output "${WORK_DIR}" @"${d8ArgFile}"`;
-  execSync(d8Cmd, { stdio: 'inherit' });
+  execFileSync(D8, ['--lib', ANDROID_JAR, '--output', WORK_DIR, `@${d8ArgFile}`], {
+    shell: true,
+    stdio: 'inherit'
+  });
 
   const dexPath = path.join(WORK_DIR, 'classes.dex');
   if (!fs.existsSync(dexPath)) {
@@ -184,16 +184,22 @@ try {
   });
 
   const signedApk = path.join(WORK_DIR, 'signed.apk');
-  const signCmd = isWin
-    ? `cmd.exe /c ""${APKSIGNER}" sign --ks "${keystorePath}" --ks-pass pass:${ksPass} --key-pass pass:${ksPass} --ks-key-alias "${alias}" --out "${signedApk}" "${alignedApk}""`
-    : `"${APKSIGNER}" sign --ks "${keystorePath}" --ks-pass pass:${ksPass} --key-pass pass:${ksPass} --ks-key-alias "${alias}" --out "${signedApk}" "${alignedApk}"`;
-  execSync(signCmd, { stdio: 'inherit' });
+  execFileSync(APKSIGNER, [
+    'sign',
+    '--ks', keystorePath,
+    '--ks-pass', `pass:${ksPass}`,
+    '--key-pass', `pass:${ksPass}`,
+    '--ks-key-alias', alias,
+    '--out', signedApk,
+    alignedApk
+  ], {
+    shell: true,
+    stdio: 'inherit'
+  });
 
   // Verify APK signature
-  const verifyCmd = isWin
-    ? `cmd.exe /c ""${APKSIGNER}" verify --verbose "${signedApk}""`
-    : `"${APKSIGNER}" verify --verbose "${signedApk}"`;
-  const verifyOutput = execSync(verifyCmd, {
+  const verifyOutput = execFileSync(APKSIGNER, ['verify', '--verbose', signedApk], {
+    shell: true,
     encoding: 'utf8'
   });
   console.log('   ✅ Verification Report:\n' + verifyOutput.trim().split('\n').map(l => '      ' + l).join('\n'));

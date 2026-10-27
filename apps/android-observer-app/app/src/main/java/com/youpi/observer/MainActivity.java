@@ -174,10 +174,11 @@ public class MainActivity extends Activity {
         lblManual.setPadding(0, 16, 0, 4);
         cardPairing.addView(lblManual);
 
-        etBaseUrl = createEditText(apiClient.getBaseUrl(), "http://your-server-ip:6100");
+        String initialUrl = apiClient.isPaired() ? apiClient.getBaseUrl() : "https://upi-rosy.vercel.app";
+        etBaseUrl = createEditText(initialUrl, "https://upi-rosy.vercel.app");
         cardPairing.addView(etBaseUrl);
 
-        etEnrollmentToken = createEditText("", "Enrollment Secret Token");
+        etEnrollmentToken = createEditText("ea3176a9710eee8f5f5a1cd5d6b642a6b72a8d58aa2d07aa3920349176822b3b", "Enrollment Secret Token");
         cardPairing.addView(etEnrollmentToken);
 
         etDeviceName = createEditText(Build.MODEL, "Custom Device Name");
