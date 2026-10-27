@@ -31,3 +31,15 @@ export function startGmailObserver(port = null, options = {}) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   startGmailObserver();
 }
+
+// Default export for Vercel Serverless / Node service invocation
+let defaultGmailServer = null;
+let defaultGmailRawServer = null;
+export default function handler(req, res) {
+  if (!defaultGmailRawServer) {
+    const poller = new GmailPoller();
+    defaultGmailServer = new GmailObserverServer({ poller });
+    defaultGmailRawServer = defaultGmailServer.createServer();
+  }
+  defaultGmailRawServer.emit('request', req, res);
+}

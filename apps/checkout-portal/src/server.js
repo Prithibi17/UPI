@@ -294,6 +294,13 @@ export class CheckoutServer {
       const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
       const pathname = url.pathname;
 
+      // Root landing redirect to merchant admin dashboard
+      if (pathname === '/' || pathname === '') {
+        res.writeHead(302, { 'Location': '/admin' });
+        res.end();
+        return;
+      }
+
       // Health
       if (pathname === '/health') {
         res.writeHead(200, { 'Content-Type': 'application/json' });

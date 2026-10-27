@@ -26,3 +26,14 @@ export function startCoinWalletStore(port = null, options = {}) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   startCoinWalletStore();
 }
+
+// Default export for Vercel Serverless / Node service invocation
+let defaultStoreServer = null;
+let defaultStoreRawServer = null;
+export default function handler(req, res) {
+  if (!defaultStoreRawServer) {
+    defaultStoreServer = new CoinWalletStoreServer();
+    defaultStoreRawServer = defaultStoreServer.createServer();
+  }
+  defaultStoreRawServer.emit('request', req, res);
+}

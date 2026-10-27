@@ -30,3 +30,17 @@ export function startAdminServer(port = null, options = {}) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   startAdminServer();
 }
+
+// Default export for Vercel Serverless / Node service invocation
+let defaultAdminServer = null;
+let defaultAdminRawServer = null;
+export default function handler(req, res) {
+  if (!defaultAdminRawServer) {
+    const db = getDatabase();
+    ensureDatabaseInitialized(db);
+    runMigrations(db);
+    defaultAdminServer = new AdminServer({ db });
+    defaultAdminRawServer = defaultAdminServer.createServer();
+  }
+  defaultAdminRawServer.emit('request', req, res);
+}

@@ -29,3 +29,16 @@ export function startHelpServer(port = null, options = {}) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   startHelpServer();
 }
+
+// Default export for Vercel Serverless / Node service invocation
+let defaultHelpServer = null;
+let defaultHelpRawServer = null;
+export default function handler(req, res) {
+  if (!defaultHelpRawServer) {
+    const db = getDatabase();
+    runMigrations(db);
+    defaultHelpServer = new HelpServer({ db });
+    defaultHelpRawServer = defaultHelpServer.createServer();
+  }
+  defaultHelpRawServer.emit('request', req, res);
+}

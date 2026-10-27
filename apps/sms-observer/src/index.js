@@ -31,3 +31,15 @@ export function startSmsObserver(port = null, options = {}) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   startSmsObserver();
 }
+
+// Default export for Vercel Serverless / Node service invocation
+let defaultSmsServer = null;
+let defaultSmsRawServer = null;
+export default function handler(req, res) {
+  if (!defaultSmsRawServer) {
+    const service = new SmsObserverService();
+    defaultSmsServer = new SmsObserverServer({ service });
+    defaultSmsRawServer = defaultSmsServer.createServer();
+  }
+  defaultSmsRawServer.emit('request', req, res);
+}

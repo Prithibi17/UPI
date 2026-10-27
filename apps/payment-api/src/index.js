@@ -435,3 +435,12 @@ export function startServer(port = null, customDb = null) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   startServer();
 }
+
+// Default export for Vercel Serverless / Node service invocation
+let defaultApp = null;
+export default function handler(req, res) {
+  if (!defaultApp) {
+    defaultApp = createPaymentApp();
+  }
+  defaultApp.rawServer.emit('request', req, res);
+}

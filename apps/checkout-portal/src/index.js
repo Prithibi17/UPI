@@ -25,3 +25,14 @@ export function startCheckoutServer(port = null, options = {}) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   startCheckoutServer();
 }
+
+// Default export for Vercel Serverless / Node service invocation
+let defaultCheckoutServer = null;
+let defaultRawServer = null;
+export default function handler(req, res) {
+  if (!defaultRawServer) {
+    defaultCheckoutServer = new CheckoutServer();
+    defaultRawServer = defaultCheckoutServer.createServer();
+  }
+  defaultRawServer.emit('request', req, res);
+}
