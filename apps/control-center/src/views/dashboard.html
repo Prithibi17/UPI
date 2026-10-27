@@ -20,50 +20,50 @@
 
     :root,
     [data-theme="light"] {
-      --font-ui: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-      --font-display: "Sora", "DM Sans", system-ui, sans-serif;
+      --font-ui: "Inter", system-ui, -apple-system, sans-serif;
+      --font-display: "Inter", system-ui, sans-serif;
       --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-      --bg: #eef0ee;
-      --bar: #12201c;
-      --card: #fbfcfb;
-      --surface: #f2f4f1;
-      --surface-hover: #e8ebe7;
-      --border: #d9ddd7;
-      --border-hover: #c0c6bd;
-      --hair: rgba(16, 26, 23, 0.08);
-      --row-hover: #f2f4f1;
-      --text: #1b2421;
-      --muted: #55625d;
-      --dim: #66726c;
-      --primary: #0f766e;
-      --success: #15803d;
-      --danger: #b91c1c;
-      --warning: #b45309;
-      --ok-bg: #e6f4ea; --ok-text: #166534; --ok-border: #b7dfc3;
-      --bad-bg: #fbe9e7; --bad-text: #991b1b; --bad-border: #f0bdb7;
-      --wait-bg: #fbf0dc; --wait-text: #8a4208; --wait-border: #ecd19b;
+      --bg: #F4F6F8;
+      --bar: #0C2340;
+      --card: #FFFFFF;
+      --surface: #F8FAFD;
+      --surface-hover: #EFF6FF;
+      --border: #E2E8F0;
+      --border-hover: #CBD5E1;
+      --hair: rgba(12, 35, 64, 0.06);
+      --row-hover: #F8FAFD;
+      --text: #0C2340;
+      --muted: #515978;
+      --dim: #64748B;
+      --primary: #0C6CF2;
+      --success: #10B981;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+      --ok-bg: #ECFDF5; --ok-text: #059669; --ok-border: #A7F3D0;
+      --bad-bg: #FEF2F2; --bad-text: #DC2626; --bad-border: #FECACA;
+      --wait-bg: #FFFBEB; --wait-text: #D97706; --wait-border: #FDE68A;
     }
 
     [data-theme="dark"] {
-      --bg: #0b0f0e;
-      --bar: #070a09;
-      --card: #121917;
-      --surface: #172120;
-      --surface-hover: #1f2d2b;
-      --border: #243230;
-      --border-hover: #364643;
+      --bg: #07111E;
+      --bar: #0C2340;
+      --card: #0C2340;
+      --surface: #08172C;
+      --surface-hover: #102B4E;
+      --border: #1E3A5F;
+      --border-hover: #2E5685;
       --hair: rgba(255, 255, 255, 0.07);
-      --row-hover: rgba(255, 255, 255, 0.025);
-      --text: #e6ece9;
-      --muted: #94a39e;
-      --dim: #8a9a94;
-      --primary: #14b8a6;
-      --success: #4ade80;
-      --danger: #f87171;
-      --warning: #fbbf24;
-      --ok-bg: rgba(74, 222, 128, 0.12); --ok-text: #86efac; --ok-border: rgba(74, 222, 128, 0.3);
-      --bad-bg: rgba(248, 113, 113, 0.12); --bad-text: #fca5a5; --bad-border: rgba(248, 113, 113, 0.3);
-      --wait-bg: rgba(251, 191, 36, 0.12); --wait-text: #fcd34d; --wait-border: rgba(251, 191, 36, 0.3);
+      --row-hover: rgba(255, 255, 255, 0.03);
+      --text: #F8FAFC;
+      --muted: #94A3B8;
+      --dim: #64748B;
+      --primary: #3395FF;
+      --success: #34D399;
+      --danger: #F87171;
+      --warning: #FBBF24;
+      --ok-bg: rgba(16, 185, 129, 0.18); --ok-text: #34D399; --ok-border: rgba(16, 185, 129, 0.35);
+      --bad-bg: rgba(239, 68, 68, 0.18); --bad-text: #FB7185; --bad-border: rgba(239, 68, 68, 0.35);
+      --wait-bg: rgba(245, 158, 11, 0.18); --wait-text: #FBBF24; --wait-border: rgba(245, 158, 11, 0.35);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-ui); }
@@ -72,18 +72,20 @@
 
     header {
       background: var(--bar);
-      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(12,35,64,0.12);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       padding: 0.75rem 1.75rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 0.75rem;
+      color: #ffffff;
     }
     .brand { display: flex; align-items: baseline; gap: 0.9rem; flex-wrap: wrap; }
     .brand h1, .card-title, .summary dd { font-family: var(--font-display); }
-    .brand h1 { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.02em; }
-    .brand span { font-size: 0.8rem; color: var(--muted); }
+    .brand h1 { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.02em; color: #ffffff; }
+    .brand span { font-size: 0.8rem; color: #94a3b8; }
     .header-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
 
     .btn {

@@ -224,6 +224,14 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
+// Theme Switcher for Store
+function toggleStoreTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('youpi-theme', next); } catch (e) {}
+}
+
 // Initialize UI on load
 document.addEventListener('DOMContentLoaded', () => {
   updateAmountUI();

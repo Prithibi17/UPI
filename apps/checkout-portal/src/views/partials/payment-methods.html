@@ -172,6 +172,18 @@
                     </div>
                   </div>
                 </div>
+                <!-- UPI Intent & Fast Checkout Banner -->
+                <div class="ypg-upi-id-section" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px 14px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:18px;">⚡</span>
+                    <div>
+                      <div style="font-size:12.5px; font-weight:700; color:#0c2340;">Razorpay Standard UPI Auto-Verify</div>
+                      <div style="font-size:11px; color:#64748b;">Scan with any app — instantaneous credit verification</div>
+                    </div>
+                  </div>
+                  <span style="font-size:11px; font-weight:700; color:#0c6cf2; background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:3px 8px;">Fastest</span>
+                </div>
+
                 <!-- UPI Payment Instructions Guide -->
                 <div class="ypg-instructions-card">
                   <div class="ypg-instruction-step">
@@ -360,77 +372,113 @@
 
               <!-- VIEW C: RAZORPAY AUTHENTIC PROCESSING / VERIFYING VIEW -->
               <div id="viewProcessingContent" hidden>
-                <div
-                  style="padding:28px 16px 20px; display:flex; flex-direction:column; align-items:center; text-align:center;">
-                  <div class="rzp-sheet-title">Processing your payment</div>
-                  <div class="rzp-sheet-subtitle">This will only take a few seconds.</div>
-                  <div class="rzp-coin-stage">
-                    <div class="rzp-halo-ring"></div>
-                    <div class="rzp-3d-coin">
-                      <div class="rzp-coin-face rzp-coin-front">
-                        <div class="rzp-coin-inner-rim"></div>
-                        <div class="rzp-coin-sheen"></div>
-                      </div>
-                      <div class="rzp-coin-face rzp-coin-back">
-                        <div class="rzp-coin-inner-rim"></div>
-                        <div class="rzp-coin-sheen"></div>
-                      </div>
+                <div style="padding:24px 16px 20px; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                  <!-- Lock Icon Badge -->
+                  <div class="ypg-processing-lock-icon">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                  </div>
+
+                  <h3 style="font-size:1.25rem; font-weight:800; color:var(--ypg-text-dark); margin-bottom:0.35rem;">Processing your payment...</h3>
+                  <p style="font-size:0.86rem; color:var(--ypg-text-muted); margin-bottom:1.25rem;">Please do not close this page.</p>
+
+                  <!-- 4-Step Progress Tracker Line -->
+                  <div class="ypg-step-tracker">
+                    <div class="ypg-tracker-step completed">
+                      <div class="ypg-tracker-dot">✓</div>
+                      <span class="ypg-tracker-label">Initiated</span>
+                    </div>
+                    <div class="ypg-tracker-step active">
+                      <div class="ypg-tracker-dot"></div>
+                      <span class="ypg-tracker-label">Processing</span>
+                    </div>
+                    <div class="ypg-tracker-step">
+                      <div class="ypg-tracker-dot"></div>
+                      <span class="ypg-tracker-label">Verifying</span>
+                    </div>
+                    <div class="ypg-tracker-step">
+                      <div class="ypg-tracker-dot"></div>
+                      <span class="ypg-tracker-label">Completed</span>
                     </div>
                   </div>
-                  <div style="font-size:12px; color:#64748b; margin-top:8px;">
-                    Bank verification in progress (<span id="procTimerText">30s</span>)
+
+                  <!-- Timer and countdown -->
+                  <div style="font-size:0.82rem; color:var(--ypg-text-muted); margin:0.85rem 0 1.25rem 0; display:flex; align-items:center; gap:0.4rem;">
+                    <span>⏱</span>
+                    <span>This usually takes a few seconds (<span id="procTimerText">30s</span>).</span>
                   </div>
-                  <button type="button" class="rzp-sheet-cancel-btn" onclick="openCancelPaymentModal()"
-                    style="max-width:320px;">Cancel</button>
+
+                  <button type="button" class="ypg-btn-outline-neutral" onclick="openCancelPaymentModal()" style="max-width:280px; font-size:0.85rem; padding:0.6rem 1rem;">Cancel</button>
                 </div>
               </div>
 
               <!-- VIEW D: SUCCESS CELEBRATION VIEW -->
               <div id="viewSuccessContent" hidden>
-                <div class="ypg-success-box">
-                  <div class="ypg-success-circle" id="successIconCircle">
-                    <svg class="ypg-check-svg" viewBox="0 0 24 24">
-                      <polyline class="ypg-check-path" points="20 6 9 17 4 12"></polyline>
+                <div style="padding:24px 16px 20px; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                  <!-- Success Green Circle -->
+                  <div class="ypg-result-circle success" id="successIconCircle">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                   </div>
-                  <div class="ypg-success-title" id="successTitleText">Payment Successful!</div>
-                  <div class="ypg-success-amount" id="successAmountVal">₹{{AMOUNT}}</div>
-                  <div style="font-size:12px; color:var(--ypg-text-muted); margin-bottom:14px;" id="successDescText">
-                    Your payment was automatically verified by YouPI PG banking observers.
+
+                  <h2 style="font-size:1.35rem; font-weight:800; color:var(--ypg-text-dark); margin-bottom:0.25rem;" id="successTitleText">Payment Successful!</h2>
+                  <div style="font-size:1.85rem; font-weight:800; color:var(--ypg-text-dark); margin:0.25rem 0;" id="successAmountVal">₹{{AMOUNT}}</div>
+                  <p style="font-size:0.86rem; color:var(--ypg-text-muted); margin-bottom:1.25rem;" id="successDescText">paid to {{MERCHANT_NAME}}</p>
+
+                  <!-- Transaction Details Card -->
+                  <div class="ypg-details-card" style="width:100%; max-width:360px;">
+                    <div class="ypg-detail-row">
+                      <span class="ypg-detail-label">Order ID</span>
+                      <span class="ypg-detail-val" id="successDetailOrderId" style="font-family:monospace;">#{{ORDER_ID}}</span>
+                    </div>
+                    <div class="ypg-detail-row">
+                      <span class="ypg-detail-label">Payment ID</span>
+                      <span class="ypg-detail-val" id="successDetailPaymentId" style="font-family:monospace;">{{PAYMENT_ID}}</span>
+                    </div>
+                    <div class="ypg-detail-row">
+                      <span class="ypg-detail-label">Method</span>
+                      <span class="ypg-detail-val">UPI (Auto-Verified)</span>
+                    </div>
+                    <div class="ypg-detail-row">
+                      <span class="ypg-detail-label">Date &amp; Time</span>
+                      <span class="ypg-detail-val" id="successDetailDate">Today, Just now</span>
+                    </div>
                   </div>
-                  <div id="successCodDevApiBox"
-                    style="display:none; font-size:11.5px; background:#f1f5f9; padding:10px 14px; border-radius:8px; margin-bottom:14px; text-align:left; border:1px solid #e2e8f0;">
+
+                  <div id="successCodDevApiBox" style="display:none; font-size:11.5px; background:#f1f5f9; padding:10px 14px; border-radius:8px; margin-bottom:14px; text-align:left; border:1px solid #e2e8f0; width:100%; max-width:360px;">
                     <span style="font-weight:700; color:#334155;">Developer Order API:</span>
-                    <div
-                      style="word-break:break-all; font-family:monospace; color:#2563eb; margin-top:3px; font-size:11px;"
-                      id="successCodDevApiUrl"></div>
+                    <div style="word-break:break-all; font-family:monospace; color:#246BFD; margin-top:3px; font-size:11px;" id="successCodDevApiUrl"></div>
                   </div>
-                  <a href="javascript:void(0)" class="btn-return-merchant" id="btnReturnStore">Return to Merchant</a>
+
+                  <a href="javascript:void(0)" class="ypg-btn-primary-blue btn-return-merchant" id="btnReturnStore" style="max-width:360px;">Go Back to Merchant</a>
                 </div>
               </div>
 
               <!-- VIEW E: DEDICATED PAYMENT EXPIRED / FAILED VIEW (CLEAN & CENTERED) -->
               <div id="viewFailedContent" hidden>
-                <div class="ypg-expired-box">
-                  <div class="ypg-expired-icon-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-                      stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
+                <div style="padding:24px 16px 20px; display:flex; flex-direction:column; align-items:center; text-align:center;">
+                  <!-- Failed Red Circle -->
+                  <div class="ypg-result-circle failed">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                   </div>
-                  <div class="ypg-expired-title" id="failedTitleText">Payment Session Expired</div>
-                  <div class="ypg-expired-desc" id="failedDescriptionText">
-                    The 5-minute active payment window elapsed before verification was completed. For security, please
-                    return to the store and initiate a new order.
-                  </div>
-                  <div class="ypg-expired-actions">
-                    <button type="button" class="ypg-btn-expired-primary" id="btnFailedAction"
-                      onclick="handleRetryNewPayment()">
+
+                  <h2 style="font-size:1.35rem; font-weight:800; color:var(--ypg-text-dark); margin-bottom:0.4rem;" id="failedTitleText">Payment Failed</h2>
+                  <p style="font-size:0.86rem; color:var(--ypg-text-muted); max-width:360px; line-height:1.45; margin-bottom:1.5rem;" id="failedDescriptionText">
+                    We could not complete your payment. Please try again or use a different method.
+                  </p>
+
+                  <div style="display:flex; flex-direction:column; gap:0.75rem; width:100%; max-width:360px;">
+                    <button type="button" class="ypg-btn-primary-blue ypg-btn-expired-primary" id="btnFailedAction" onclick="handleRetryNewPayment()">
                       Try Again
                     </button>
-                    <button type="button" class="ypg-btn-expired-secondary" onclick="openHelpModal()">
-                      Help & Support
+                    <button type="button" class="ypg-btn-outline-neutral ypg-btn-expired-secondary" onclick="openHelpModal()">
+                      Choose Another Method
                     </button>
                   </div>
                 </div>

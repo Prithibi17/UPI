@@ -1,20 +1,46 @@
-    :root {
-      --ypg-blue: #0b63e5;
-      --ypg-blue-dark: #0957cb;
-      --ypg-navy: #0b1526;
-      --ypg-header-gradient: linear-gradient(180deg, #0b63e5 0%, #0957cb 100%);
-      --ypg-bg: #f8fafc;
-      --ypg-card: #ffffff;
-      --ypg-text-dark: #0f172a;
-      --ypg-text-muted: #64748b;
+    :root,
+    [data-theme="light"] {
+      --ypg-blue: #0c6cf2;
+      --ypg-blue-dark: #0254c7;
+      --ypg-navy: #0c2340;
+      --ypg-header-gradient: linear-gradient(180deg, #0c2340 0%, #081a36 100%);
+      --ypg-bg: #f4f6f8;
+      --ypg-card: #FFFFFF;
+      --ypg-card-subtle: #f8fafc;
+      --ypg-text-dark: #0c2340;
+      --ypg-text-muted: #515978;
       --ypg-border: #e2e8f0;
-      --ypg-border-light: #eef2f6;
-      --ypg-green: #0d9f67;
-      --ypg-green-bg: #e6f9f0;
+      --ypg-border-light: #edf2f7;
+      --ypg-green: #10b981;
+      --ypg-green-bg: #ecfdf5;
       --ypg-offer-bg: #eff6ff;
-      --ypg-offer-border: #dbeafe;
+      --ypg-offer-border: #bfdbfe;
       --ypg-danger: #ef4444;
-      --ypg-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --ypg-warning: #f59e0b;
+      --ypg-purple: #8b5cf6;
+      --ypg-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    [data-theme="dark"] {
+      --ypg-blue: #3395ff;
+      --ypg-blue-dark: #0c6cf2;
+      --ypg-navy: #F8FAFC;
+      --ypg-header-gradient: linear-gradient(180deg, #081426 0%, #0c2340 100%);
+      --ypg-bg: #07111e;
+      --ypg-card: #0c2340;
+      --ypg-card-subtle: #081a36;
+      --ypg-text-dark: #F8FAFC;
+      --ypg-text-muted: #94A3B8;
+      --ypg-border: #1E2D4A;
+      --ypg-border-light: #16233E;
+      --ypg-green: #34D399;
+      --ypg-green-bg: rgba(16, 185, 129, 0.15);
+      --ypg-offer-bg: rgba(12, 108, 242, 0.15);
+      --ypg-offer-border: rgba(12, 108, 242, 0.35);
+      --ypg-danger: #F87171;
+      --ypg-warning: #FBBF24;
+      --ypg-purple: #A78BFA;
+      --ypg-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
     * {
@@ -42,7 +68,7 @@
     }
 
     body {
-      background-color: #0b0f19;
+      background-color: var(--ypg-bg);
       color: var(--ypg-text-dark);
       min-height: 100vh;
       min-height: 100dvh;
@@ -71,10 +97,11 @@
       width: 100%;
       max-width: 440px;
       min-height: 100vh;
-      background: #ffffff;
+      background: var(--ypg-card);
       display: flex;
       flex-direction: column;
-      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--ypg-border);
       position: relative;
       overflow: hidden;
     }
@@ -878,12 +905,14 @@
     }
 
     .ypg-btn-auth-action:hover {
-      background: #1e293b;
+      background: var(--ypg-blue-dark);
     }
 
     .ypg-btn-auth-action:disabled {
-      opacity: 0.65;
+      background: #E2E8F0;
+      color: #94A3B8;
       cursor: not-allowed;
+      border: 1px solid #CBD5E1;
     }
 
     .ypg-phone-input-wrap {
@@ -1267,19 +1296,17 @@
     }
 
     .ypg-btn-expired-primary:hover {
-      background: #1e293b;
+      background: var(--ypg-blue-dark);
     }
 
     .ypg-btn-expired-secondary {
-      padding: 12px 16px;
-      background: #f1f5f9;
-      color: #475569;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 13.5px;
-      font-weight: 700;
+      background: #FFFFFF;
+      color: var(--ypg-text-dark);
+      border: 1px solid var(--ypg-border);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s;
     }
 
     .ypg-btn-expired-secondary:hover {
@@ -1392,17 +1419,12 @@
       line-height: 1.45;
     }
     .ypg-blocked-details {
-      background: #0f172a;
-      border-radius: 8px;
-      padding: 10px 14px;
-      margin-bottom: 18px;
-      width: 100%;
-      max-width: 340px;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 4px 10px;
-      font-size: 11px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: var(--ypg-border-light);
+      border: 1px solid var(--ypg-border);
+      color: var(--ypg-text-dark);
+      border-radius: 10px;
+      padding: 14px;
+      margin: 16px 0;
     }
     .ypg-blocked-details-label {
       color: #94a3b8;
@@ -1415,24 +1437,17 @@
       white-space: nowrap;
     }
     .ypg-btn-blocked-exit {
-      background: #0f172a;
-      color: #ffffff;
-      border: none;
-      padding: 11px 20px;
+      background: #FFFFFF;
+      border: 1px solid var(--ypg-border);
+      color: var(--ypg-text-dark);
       border-radius: 10px;
-      font-weight: 700;
-      font-size: 13px;
+      padding: 12px 18px;
+      font-weight: 600;
       cursor: pointer;
-      width: 100%;
-      max-width: 340px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s;
     }
     .ypg-btn-blocked-exit:hover {
-      background: #1e293b;
+      background: #F8FAFC;
+      border-color: #CBD5E1;
     }
 
     /* --- 10b. DEDICATED DUPLICATE SESSION DETECTED VIEW (DEVICE BINDING SECURITY) --- */
@@ -1514,26 +1529,16 @@
       font-weight: 500;
     }
     .ypg-btn-duplicate-action {
-      background: #0f172a;
+      background: var(--ypg-blue);
       color: #ffffff;
       border: none;
-      padding: 13px 20px;
+      padding: 12px 20px;
       border-radius: 10px;
-      font-weight: 700;
-      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
-      width: 100%;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      letter-spacing: 0.02em;
     }
     .ypg-btn-duplicate-action:hover {
-      background: #1e293b;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.25);
+      background: var(--ypg-blue-dark);
     }
     .ypg-btn-duplicate-action:active {
       transform: translateY(0);
@@ -1612,7 +1617,7 @@
     }
 
     .ypg-btn-continue:hover {
-      background: #1e293b;
+      background: var(--ypg-blue-dark);
     }
 
     .ypg-btn-continue:active {
@@ -2048,30 +2053,31 @@
     }
 
     .rzp-btn-confirm-cancel {
-      width: 100%;
-      height: 42px;
-      background: #0f172a;
-      border: none;
+      background: #FFFFFF;
+      border: 1px solid var(--ypg-border);
+      color: var(--ypg-text-dark);
       border-radius: 10px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #ffffff;
+      padding: 10px 16px;
+      font-weight: 600;
       cursor: pointer;
-      margin-top: 8px;
-      transition: all 0.2s;
     }
 
     .rzp-btn-confirm-cancel:hover {
-      background: #1e293b;
+      background: #F8FAFC;
+      border-color: #CBD5E1;
     }
 
     .rzp-secured-by {
-      font-size: 12px;
-      color: #64748b;
-      margin-top: 22px;
+      background: var(--ypg-border-light);
+      color: var(--ypg-text-muted);
+      border-top: 1px solid var(--ypg-border);
       display: flex;
       align-items: center;
-      gap: 5px;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px;
+      font-size: 11px;
+      font-weight: 600;
     }
 
     /* --- PSYCHOLOGICAL TIME-SAVING CONVERSION BANNER --- */
@@ -2213,7 +2219,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #0b0f19;
+        background-color: var(--ypg-bg);
       }
 
       body:not(.is-embedded) {
@@ -2257,13 +2263,13 @@
         display: none !important;
       }
 
-      /* PC Left Sidebar (Blue Branding Panel - ~310px width) */
+      /* PC Left Sidebar (Razorpay Signature Deep Navy Shell - ~310px width) */
       .ypg-pc-sidebar {
         width: 310px;
         min-width: 310px;
         max-width: 310px;
         height: 100%;
-        background: linear-gradient(180deg, var(--ypg-blue, #0b63e5) 0%, var(--ypg-blue-dark, #0854c6) 100%);
+        background: linear-gradient(180deg, #0c2340 0%, #081a36 100%);
         padding: 22px 20px;
         display: flex !important;
         flex-direction: column;
@@ -2272,6 +2278,7 @@
         position: relative;
         overflow: hidden;
         box-sizing: border-box;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
       }
 
       .ypg-pc-brand-header {
@@ -3019,15 +3026,13 @@
     }
 
     .ypg-btn-downtime-alt {
-      background: #0f172a;
-      color: #ffffff;
-      border: none;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 6px 12px;
+      background: #FFFFFF;
+      border: 1px solid var(--ypg-border);
+      color: var(--ypg-text-dark);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: 600;
       cursor: pointer;
-      transition: opacity 0.2s;
     }
 
     .ypg-btn-downtime-alt:hover {
@@ -3052,3 +3057,210 @@
         max-height: 170px !important;
       }
     }
+
+/* ============================================================
+   YOUPI PG V2 — MODERN FINTECH CHECKOUT (Razorpay Reference)
+   ============================================================ */
+
+/* Processing Step Tracker */
+.ypg-step-tracker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 340px;
+  margin: 1.5rem auto;
+  position: relative;
+}
+
+.ypg-step-tracker::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: var(--ypg-border);
+  z-index: 1;
+}
+
+.ypg-tracker-step {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.ypg-tracker-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2px solid var(--ypg-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.ypg-tracker-step.completed .ypg-tracker-dot {
+  background: var(--ypg-blue);
+  border-color: var(--ypg-blue);
+  color: #FFFFFF;
+}
+
+.ypg-tracker-step.active .ypg-tracker-dot {
+  background: var(--ypg-blue);
+  border-color: var(--ypg-blue);
+  box-shadow: 0 0 0 4px rgba(36, 107, 253, 0.2);
+}
+
+.ypg-tracker-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ypg-text-muted);
+}
+
+.ypg-tracker-step.active .ypg-tracker-label {
+  color: var(--ypg-blue);
+  font-weight: 700;
+}
+
+/* Step 3: Processing Stage */
+.ypg-processing-lock-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #EDF4FF;
+  color: #246BFD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem auto;
+  box-shadow: 0 4px 18px rgba(36, 107, 253, 0.15);
+}
+
+/* Step 4 & 5: Success & Failed Card Enhancements */
+.ypg-result-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem auto;
+}
+
+.ypg-result-circle.success {
+  background: #12B981;
+  color: #FFFFFF;
+  box-shadow: 0 6px 20px rgba(18, 185, 129, 0.28);
+}
+
+.ypg-result-circle.failed {
+  background: #F05265;
+  color: #FFFFFF;
+  box-shadow: 0 6px 20px rgba(240, 82, 101, 0.28);
+}
+
+.ypg-details-card {
+  background: #F8FAFD;
+  border: 1px solid var(--ypg-border);
+  border-radius: 12px;
+  padding: 1.15rem 1.25rem;
+  margin: 1.25rem 0;
+  text-align: left;
+}
+
+.ypg-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed var(--ypg-border);
+  font-size: 0.82rem;
+}
+
+.ypg-detail-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ypg-detail-label {
+  color: var(--ypg-text-muted);
+  font-weight: 600;
+}
+
+.ypg-detail-val {
+  color: var(--ypg-text-dark);
+  font-weight: 700;
+}
+
+.ypg-btn-primary-blue {
+  background: #246BFD;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  box-shadow: 0 4px 14px rgba(36, 107, 253, 0.25);
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.ypg-btn-primary-blue:hover {
+  background: #1a5ad4;
+  box-shadow: 0 6px 18px rgba(36, 107, 253, 0.35);
+}
+
+.ypg-btn-outline-neutral {
+  background: transparent;
+  color: var(--ypg-text-dark);
+  border: 1px solid var(--ypg-border);
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.ypg-btn-outline-neutral:hover {
+  background: var(--ypg-bg);
+  border-color: #CBD5E1;
+}
+
+/* VPA Pill & UPI Actions */
+.ypg-vpa-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #EDF4FF;
+  border: 1px solid #c8dcff;
+  border-radius: 9999px;
+  padding: 0.4rem 0.95rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #246BFD;
+  margin: 0.5rem auto 1rem auto;
+}
+
+.ypg-copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #246BFD;
+  display: flex;
+  align-items: center;
+}

@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>YOUPI Store · Enterprise Payment Gateway Suite</title>
+  <script>
+    (function () {
+      var p = 'system';
+      try { var v = localStorage.getItem('youpi-theme'); if (v === 'light' || v === 'dark') p = v; } catch (e) {}
+      var dark = p === 'dark' || (p === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <!-- OFFICIAL YOUPI PG UNIVERSAL INTEGRATION SCRIPT -->
@@ -15,7 +23,7 @@
 
   <!-- TOP ANNOUNCEMENT BAR -->
   <div class="top-announcement">
-    <span>✨ <strong>YOUPI Gateway</strong> Demo Powered by YOUPI PG</span>
+    <span>✨ <strong>YOUPI Gateway</strong> Demo · Razorpay Standard UI Style Powered by YOUPI PG</span>
     <span style="opacity:0.4;">|</span>
     <span>Zero Platform Fees · Direct P2P UPI Settlement</span>
   </div>
@@ -36,6 +44,7 @@
         <a href="#developer-guide" class="btn-admin-link" style="background:#eff6ff; color:#2563eb; border-color:#bfdbfe;">📖 Developer Guide</a>
         <a href="/openapi.yaml" target="_blank" class="btn-admin-link">⚙️ OpenAPI</a>
         <a href="/wallet" class="btn-admin-link" style="background:#1e293b; color:#ffffff; border-color:#334155;">🪙 Wallet (<span id="topWalletBalance">50</span>)</a>
+        <button id="themeToggleBtn" type="button" class="btn-admin-link" onclick="toggleStoreTheme()" title="Toggle Light / Dark Mode" style="cursor:pointer;">🌓 Mode</button>
       </nav>
     </div>
   </header>

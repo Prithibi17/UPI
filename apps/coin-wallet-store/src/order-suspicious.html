@@ -4,39 +4,65 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Payment Under Review · YOUPI Store</title>
+  <script>
+    (function () {
+      var p = 'system';
+      try { var v = localStorage.getItem('youpi-theme'); if (v === 'light' || v === 'dark') p = v; } catch (e) {}
+      var dark = p === 'dark' || (p === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #0b1120;
-      --card-bg: #111c34;
-      --border: #1e293b;
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --warning: #f59e0b;
+    :root,
+    [data-theme="light"] {
+      --bg: #F4F6F8;
+      --card-bg: #FFFFFF;
+      --card-subtle: #F8FAFD;
+      --border: #E2E8F0;
+      --primary: #0C6CF2;
+      --primary-hover: #0254C7;
+      --warning: #F59E0B;
       --warning-glow: rgba(245, 158, 11, 0.2);
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --text: #0C2340;
+      --text-muted: #515978;
+      --header-bg: #0C2340;
+    }
+
+    [data-theme="dark"] {
+      --bg: #07111E;
+      --card-bg: #0C2340;
+      --card-subtle: #08172C;
+      --border: #1E3A5F;
+      --primary: #3395FF;
+      --primary-hover: #0C6CF2;
+      --warning: #FBBF24;
+      --warning-glow: rgba(251, 191, 36, 0.25);
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --header-bg: #0C2340;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
 
     header {
-      background: #060a12;
-      border-bottom: 1px solid var(--border);
+      background: var(--header-bg);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       padding: 1rem 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      color: #ffffff;
     }
 
     .brand {
       font-size: 1.25rem;
       font-weight: 800;
       font-family: 'Outfit', sans-serif;
-      color: #38bdf8;
+      color: #ffffff;
       text-decoration: none;
       display: flex;
       align-items: center;
@@ -51,14 +77,14 @@
       border-radius: 1.25rem;
       padding: 2.5rem 2rem;
       text-align: center;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 4px 25px rgba(16, 31, 61, 0.08);
     }
 
     .status-icon-wrap {
       width: 76px;
       height: 76px;
       border-radius: 50%;
-      background: rgba(245, 158, 11, 0.15);
+      background: rgba(180, 83, 9, 0.12);
       border: 2px solid var(--warning);
       color: var(--warning);
       font-size: 2.25rem;
@@ -73,7 +99,7 @@
       font-family: 'Outfit', sans-serif;
       font-size: 1.85rem;
       font-weight: 800;
-      color: #ffffff;
+      color: var(--text);
       margin-bottom: 0.5rem;
     }
 
@@ -85,9 +111,9 @@
     }
 
     .warning-box {
-      background: rgba(245, 158, 11, 0.08);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      color: #fbbf24;
+      background: var(--card-subtle);
+      border: 1px solid var(--border);
+      color: var(--warning);
       padding: 1rem 1.25rem;
       border-radius: 0.75rem;
       margin-bottom: 1.75rem;
@@ -97,7 +123,7 @@
     }
 
     .details-table {
-      background: #070d18;
+      background: var(--card-subtle);
       border: 1px solid var(--border);
       border-radius: 0.85rem;
       padding: 1.25rem;
@@ -110,13 +136,13 @@
       justify-content: space-between;
       align-items: center;
       padding: 0.65rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--border);
       font-size: 0.9rem;
     }
 
     .detail-row:last-child { border-bottom: none; }
     .detail-label { color: var(--text-muted); font-weight: 500; }
-    .detail-val { color: #ffffff; font-weight: 700; font-family: monospace; font-size: 0.95rem; }
+    .detail-val { color: var(--text); font-weight: 700; font-family: monospace; font-size: 0.95rem; }
 
     .btn-row { display: flex; gap: 0.85rem; }
     .btn {
@@ -135,9 +161,9 @@
       transition: all 0.2s;
     }
 
-    .btn-primary { background: #334155; color: #ffffff; }
+    .btn-primary { background: #334155; color: #101F3D; }
     .btn-primary:hover { background: #475569; }
-    .btn-secondary { background: #1e293b; color: #f8fafc; border: 1px solid var(--border); }
+    .btn-secondary { background: #FFFFFF; color: #f8fafc; border: 1px solid var(--border); }
     .btn-secondary:hover { background: #334155; }
   </style>
 </head>
