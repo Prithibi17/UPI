@@ -91,6 +91,12 @@
       }
     },
     {
+      "source": "/youpi-sms-gateway.apk",
+      "destination": {
+        "service": "payment-api"
+      }
+    },
+    {
       "source": "/health",
       "destination": {
         "service": "payment-api"

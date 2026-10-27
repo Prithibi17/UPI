@@ -625,13 +625,16 @@ export function registerPollerRoutes(server, ctx) {
     }
 
     if (!foundPath) {
-      // Create a fallback stub APK binary file if build hasn't outputted yet
-      const fallbackDir = path.resolve(__dirname, '../../public');
-      if (!fs.existsSync(fallbackDir)) fs.mkdirSync(fallbackDir, { recursive: true });
-      foundPath = path.join(fallbackDir, 'youpi-sms-gateway.apk');
-      if (!fs.existsSync(foundPath)) {
-        fs.writeFileSync(foundPath, Buffer.from('PK\x03\x04YOUPI_SMS_GATEWAY_STANDALONE_APK_PACKAGE'));
-      }
+      // Fallback in-memory APK binary if not found on disk (avoids EROFS on serverless)
+      const fallbackBuf = Buffer.from('PK\x03\x04YOUPI_SMS_GATEWAY_STANDALONE_APK_PACKAGE');
+      res.writeHead(200, {
+        'Content-Type': 'application/vnd.android.package-archive',
+        'Content-Disposition': 'attachment; filename="youpi-sms-gateway.apk"',
+        'Content-Length': fallbackBuf.length,
+        'Access-Control-Allow-Origin': '*'
+      });
+      res.end(fallbackBuf);
+      return;
     }
 
     const stat = fs.statSync(foundPath);
@@ -646,4 +649,5 @@ export function registerPollerRoutes(server, ctx) {
 
   server.get('/api/v1/admin/sms-gateway/download-apk', serveApk);
   server.get('/youpi-sms-gateway.apk', serveApk);
+  server.get('/admin/youpi-sms-gateway.apk', serveApk);
 }

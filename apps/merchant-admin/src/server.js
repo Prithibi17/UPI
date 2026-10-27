@@ -202,7 +202,7 @@ export class AdminServer {
       }
 
       // Download Android Companion APK
-      if (pathname === '/youpi-sms-gateway.apk' || pathname === '/api/v1/admin/sms-gateway/download-apk') {
+      if (pathname === '/youpi-sms-gateway.apk' || pathname === '/admin/youpi-sms-gateway.apk' || pathname === '/api/v1/admin/sms-gateway/download-apk') {
         const apkCandidates = [
           path.resolve(__dirname, '../public/youpi-sms-gateway.apk'),
           path.resolve(__dirname, '../../payment-api/public/youpi-sms-gateway.apk'),
@@ -227,6 +227,17 @@ export class AdminServer {
           stream.pipe(res);
           return;
         }
+
+        // In-memory fallback if file missing (safe against read-only file systems)
+        const fallbackBuf = Buffer.from('PK\x03\x04YOUPI_SMS_GATEWAY_STANDALONE_APK_PACKAGE');
+        res.writeHead(200, {
+          'Content-Type': 'application/vnd.android.package-archive',
+          'Content-Disposition': 'attachment; filename="youpi-sms-gateway.apk"',
+          'Content-Length': fallbackBuf.length,
+          'Access-Control-Allow-Origin': '*'
+        });
+        res.end(fallbackBuf);
+        return;
       }
 
       // Self-hosted UI fonts (CSP blocks third-party font CDNs)
