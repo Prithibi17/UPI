@@ -32,13 +32,19 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 
 // Default export for Vercel Serverless / Node service invocation
 let defaultHelpServer = null;
-let defaultHelpRawServer = null;
-export default function handler(req, res) {
-  if (!defaultHelpRawServer) {
-    const db = getDatabase();
-    runMigrations(db);
-    defaultHelpServer = new HelpServer({ db });
-    defaultHelpRawServer = defaultHelpServer.createServer();
+export default async function handler(req, res) {
+  try {
+    if (!defaultHelpServer) {
+      const db = getDatabase();
+      runMigrations(db);
+      defaultHelpServer = new HelpServer({ db });
+    }
+    await defaultHelpServer.handleRequest(req, res);
+  } catch (err) {
+    console.error('[Payment Help Handler Error]:', err);
+    if (!res.headersSent) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Function invocation error', details: err.message }));
+    }
   }
-  defaultHelpRawServer.emit('request', req, res);
 }

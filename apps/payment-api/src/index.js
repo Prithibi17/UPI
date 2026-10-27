@@ -438,9 +438,17 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 
 // Default export for Vercel Serverless / Node service invocation
 let defaultApp = null;
-export default function handler(req, res) {
-  if (!defaultApp) {
-    defaultApp = createPaymentApp();
+export default async function handler(req, res) {
+  try {
+    if (!defaultApp) {
+      defaultApp = createPaymentApp();
+    }
+    await defaultApp.server.handleRequest(req, res);
+  } catch (err) {
+    console.error('[Payment API Handler Error]:', err);
+    if (!res.headersSent) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Function invocation error', details: err.message }));
+    }
   }
-  defaultApp.rawServer.emit('request', req, res);
 }

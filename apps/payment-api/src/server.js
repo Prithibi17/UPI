@@ -176,9 +176,12 @@ export class HttpServer {
    * Creates native HTTP server.
    */
   createServer() {
-    return http.createServer(async (req, res) => {
-      // Handle CORS preflight
-      if (req.method === 'OPTIONS') {
+    return http.createServer((req, res) => this.handleRequest(req, res));
+  }
+
+  async handleRequest(req, res) {
+    // Handle CORS preflight
+    if (req.method === 'OPTIONS') {
         res.writeHead(204, {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -235,6 +238,5 @@ export class HttpServer {
 
       // Not found
       HttpServer.json(res, 404, { error: `Route not found: ${method} ${pathname}` });
-    });
   }
 }

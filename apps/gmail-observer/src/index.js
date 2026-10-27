@@ -34,12 +34,18 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 
 // Default export for Vercel Serverless / Node service invocation
 let defaultGmailServer = null;
-let defaultGmailRawServer = null;
-export default function handler(req, res) {
-  if (!defaultGmailRawServer) {
-    const poller = new GmailPoller();
-    defaultGmailServer = new GmailObserverServer({ poller });
-    defaultGmailRawServer = defaultGmailServer.createServer();
+export default async function handler(req, res) {
+  try {
+    if (!defaultGmailServer) {
+      const poller = new GmailPoller();
+      defaultGmailServer = new GmailObserverServer({ poller });
+    }
+    await defaultGmailServer.handleRequest(req, res);
+  } catch (err) {
+    console.error('[Gmail Observer Handler Error]:', err);
+    if (!res.headersSent) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Function invocation error', details: err.message }));
+    }
   }
-  defaultGmailRawServer.emit('request', req, res);
 }

@@ -33,14 +33,20 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 
 // Default export for Vercel Serverless / Node service invocation
 let defaultAdminServer = null;
-let defaultAdminRawServer = null;
-export default function handler(req, res) {
-  if (!defaultAdminRawServer) {
-    const db = getDatabase();
-    ensureDatabaseInitialized(db);
-    runMigrations(db);
-    defaultAdminServer = new AdminServer({ db });
-    defaultAdminRawServer = defaultAdminServer.createServer();
+export default async function handler(req, res) {
+  try {
+    if (!defaultAdminServer) {
+      const db = getDatabase();
+      ensureDatabaseInitialized(db);
+      runMigrations(db);
+      defaultAdminServer = new AdminServer({ db });
+    }
+    await defaultAdminServer.handleRequest(req, res);
+  } catch (err) {
+    console.error('[Merchant Admin Handler Error]:', err);
+    if (!res.headersSent) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Function invocation error', details: err.message }));
+    }
   }
-  defaultAdminRawServer.emit('request', req, res);
 }

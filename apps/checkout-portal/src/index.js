@@ -28,11 +28,17 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 
 // Default export for Vercel Serverless / Node service invocation
 let defaultCheckoutServer = null;
-let defaultRawServer = null;
-export default function handler(req, res) {
-  if (!defaultRawServer) {
-    defaultCheckoutServer = new CheckoutServer();
-    defaultRawServer = defaultCheckoutServer.createServer();
+export default async function handler(req, res) {
+  try {
+    if (!defaultCheckoutServer) {
+      defaultCheckoutServer = new CheckoutServer();
+    }
+    await defaultCheckoutServer.handleRequest(req, res);
+  } catch (err) {
+    console.error('[Checkout Portal Handler Error]:', err);
+    if (!res.headersSent) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Function invocation error', details: err.message }));
+    }
   }
-  defaultRawServer.emit('request', req, res);
 }

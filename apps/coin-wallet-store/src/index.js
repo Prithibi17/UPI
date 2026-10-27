@@ -29,11 +29,17 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 
 // Default export for Vercel Serverless / Node service invocation
 let defaultStoreServer = null;
-let defaultStoreRawServer = null;
-export default function handler(req, res) {
-  if (!defaultStoreRawServer) {
-    defaultStoreServer = new CoinWalletStoreServer();
-    defaultStoreRawServer = defaultStoreServer.createServer();
+export default async function handler(req, res) {
+  try {
+    if (!defaultStoreServer) {
+      defaultStoreServer = new CoinWalletStoreServer();
+    }
+    await defaultStoreServer.handleRequest(req, res);
+  } catch (err) {
+    console.error('[Coin Wallet Store Handler Error]:', err);
+    if (!res.headersSent) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Function invocation error', details: err.message }));
+    }
   }
-  defaultStoreRawServer.emit('request', req, res);
 }

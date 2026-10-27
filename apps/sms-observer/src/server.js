@@ -17,10 +17,13 @@ export class SmsObserverServer {
   }
 
   createServer() {
-    return http.createServer(async (req, res) => {
-      const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-      const pathname = url.pathname;
-      const method = (req.method || 'GET').toUpperCase();
+    return http.createServer((req, res) => this.handleRequest(req, res));
+  }
+
+  async handleRequest(req, res) {
+    const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    const pathname = url.pathname;
+    const method = (req.method || 'GET').toUpperCase();
 
       if (method === 'OPTIONS') {
         res.writeHead(204, {
@@ -145,6 +148,5 @@ export class SmsObserverServer {
 
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('SMS Observer Route Not Found');
-    });
   }
 }

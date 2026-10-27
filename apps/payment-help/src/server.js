@@ -46,9 +46,12 @@ export class HelpServer {
   }
 
   createServer() {
-    return http.createServer(async (req, res) => {
-      const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-      const pathname = url.pathname;
+    return http.createServer((req, res) => this.handleRequest(req, res));
+  }
+
+  async handleRequest(req, res) {
+    const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    const pathname = url.pathname;
 
       if (req.method === 'OPTIONS') {
         res.writeHead(204, {
@@ -91,6 +94,5 @@ export class HelpServer {
 
       res.writeHead(404, { 'Content-Type': 'text/plain', ...HELP_SECURITY_HEADERS });
       res.end('Help Portal Route Not Found');
-    });
   }
 }

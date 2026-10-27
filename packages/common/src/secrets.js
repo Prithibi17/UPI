@@ -26,14 +26,30 @@ export function resolveSecret(name, envVar) {
   let value = '';
   try { value = fs.readFileSync(file, 'utf8').trim(); } catch {}
   if (!value) {
-    fs.mkdirSync(SECRETS_DIR, { recursive: true });
     const fresh = crypto.randomBytes(32).toString('hex');
     try {
-      fs.writeFileSync(file, fresh, { flag: 'wx', mode: 0o600 });
-      value = fresh;
+      fs.mkdirSync(SECRETS_DIR, { recursive: true });
+      try {
+        fs.writeFileSync(file, fresh, { flag: 'wx', mode: 0o600 });
+        value = fresh;
+      } catch {
+        value = fs.readFileSync(file, 'utf8').trim() || fresh;
+      }
     } catch {
-      // Another process created it first: use theirs.
-      value = fs.readFileSync(file, 'utf8').trim();
+      // In read-only environments (e.g. Vercel Serverless / AWS Lambda), persist in /tmp or in-memory
+      try {
+        const tmpDir = path.join('/tmp', '.youpi_secrets');
+        fs.mkdirSync(tmpDir, { recursive: true });
+        const tmpFile = path.join(tmpDir, name);
+        try {
+          value = fs.readFileSync(tmpFile, 'utf8').trim();
+        } catch {
+          fs.writeFileSync(tmpFile, fresh, { flag: 'wx', mode: 0o600 });
+          value = fresh;
+        }
+      } catch {
+        value = fresh;
+      }
     }
   }
   cache.set(name, value);

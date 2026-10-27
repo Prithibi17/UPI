@@ -45,19 +45,33 @@ export class Database {
         dbPath = path.isAbsolute(process.env.SQLITE_DB_PATH)
           ? process.env.SQLITE_DB_PATH
           : path.resolve(repoRoot, process.env.SQLITE_DB_PATH);
+      } else if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT) {
+        dbPath = path.join('/tmp', 'youpi_pg.sqlite');
       } else {
         dbPath = path.resolve(repoRoot, 'data/youpi_pg.sqlite');
       }
-      const dir = path.dirname(dbPath);
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+
+      try {
+        const dir = path.dirname(dbPath);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+        }
+        this.db = new DatabaseSync(dbPath);
+        try { fs.chmodSync(dbPath, 0o600); } catch {}
+        try { fs.chmodSync(dir, 0o700); } catch {}
+      } catch (err) {
+        if (err.code === 'EROFS' || err.message?.includes('read-only')) {
+          console.warn('[Database] Read-only filesystem detected, falling back to /tmp/youpi_pg.sqlite');
+          dbPath = path.join('/tmp', 'youpi_pg.sqlite');
+          const tmpDir = path.dirname(dbPath);
+          if (!fs.existsSync(tmpDir)) {
+            fs.mkdirSync(tmpDir, { recursive: true });
+          }
+          this.db = new DatabaseSync(dbPath);
+        } else {
+          throw err;
+        }
       }
-      this.db = new DatabaseSync(dbPath);
-      // The file holds webhook secrets, session-token indexes, OTPs and customer PII.
-      // Default file creation honours umask, which on many hosts leaves it group/world
-      // readable, so restrict it explicitly.
-      try { fs.chmodSync(dbPath, 0o600); } catch {}
-      try { fs.chmodSync(dir, 0o700); } catch {}
     }
 
     // Enable foreign keys, busy timeout, and WAL mode for maximum concurrency and integrity

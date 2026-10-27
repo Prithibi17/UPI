@@ -290,9 +290,12 @@ export class CheckoutServer {
   }
 
   createServer() {
-    return http.createServer(async (req, res) => {
-      const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-      const pathname = url.pathname;
+    return http.createServer((req, res) => this.handleRequest(req, res));
+  }
+
+  async handleRequest(req, res) {
+    const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    const pathname = url.pathname;
 
       // Root landing redirect to merchant admin dashboard
       if (pathname === '/' || pathname === '') {
@@ -454,6 +457,5 @@ export class CheckoutServer {
       // Not found
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('Checkout Page Not Found');
-    });
   }
 }
