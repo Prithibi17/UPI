@@ -1,6 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "services": {
+    "app": {
+      "root": ".",
+      "runtime": "container"
+    },
     "payment-api": {
       "root": "apps/payment-api",
       "runtime": "node"
