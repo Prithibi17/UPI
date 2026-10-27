@@ -4,15 +4,13 @@ import { GmailObserverServer } from './server.js';
 import { GmailPoller } from './gmail-poller.js';
 
 export function startGmailObserver(port = null, options = {}) {
-  const finalPort = port || Number(process.env.GMAIL_OBSERVER_PORT || 6003);
+  const finalPort = port || Number(process.env.PORT || process.env.GMAIL_OBSERVER_PORT || 6003);
   const poller = new GmailPoller(options);
   const observerServer = new GmailObserverServer({ poller, ...options });
   const rawServer = observerServer.createServer();
 
-  // Bind to loopback unless explicitly overridden. These services hold admin/observer
-  // credentials and are reached through a local Cloudflare Tunnel, so exposing every
-  // network interface is unnecessary.
-  const bindHost = process.env.YOUPI_BIND_HOST || '127.0.0.1';
+  // Bind to loopback unless explicitly overridden or when PORT is set in cloud platforms.
+  const bindHost = process.env.YOUPI_BIND_HOST || (process.env.PORT ? '0.0.0.0' : '127.0.0.1');
 
   return new Promise(resolve => {
     const instance = rawServer.listen(finalPort, bindHost, () => {

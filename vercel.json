@@ -1,17 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "services": {
-    "app": {
-      "root": ".",
-      "runtime": "container"
-    },
     "payment-api": {
       "root": "apps/payment-api",
-      "runtime": "node"
+      "runtime": "node",
+      "entrypoint": "src/index.js"
     },
     "checkout-portal": {
       "root": "apps/checkout-portal",
       "runtime": "node",
+      "entrypoint": "src/index.js",
       "bindings": [
         {
           "type": "service",
@@ -24,6 +22,7 @@
     "merchant-admin": {
       "root": "apps/merchant-admin",
       "runtime": "node",
+      "entrypoint": "src/index.js",
       "bindings": [
         {
           "type": "service",
@@ -36,6 +35,7 @@
     "coin-wallet-store": {
       "root": "apps/coin-wallet-store",
       "runtime": "node",
+      "entrypoint": "src/index.js",
       "bindings": [
         {
           "type": "service",
@@ -53,11 +53,13 @@
     },
     "payment-help": {
       "root": "apps/payment-help",
-      "runtime": "node"
+      "runtime": "node",
+      "entrypoint": "src/index.js"
     },
     "sms-observer": {
       "root": "apps/sms-observer",
       "runtime": "node",
+      "entrypoint": "src/index.js",
       "bindings": [
         {
           "type": "service",
@@ -70,6 +72,7 @@
     "gmail-observer": {
       "root": "apps/gmail-observer",
       "runtime": "node",
+      "entrypoint": "src/index.js",
       "bindings": [
         {
           "type": "service",
