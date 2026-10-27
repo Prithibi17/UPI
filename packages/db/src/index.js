@@ -1,4 +1,5 @@
 export * from './database.js';
+export * from './turso-bridge.js';
 export * from './migrate.js';
 export * from './repositories/merchant.repository.js';
 export * from './repositories/receiving-account.repository.js';
