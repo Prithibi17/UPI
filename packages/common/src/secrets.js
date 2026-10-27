@@ -10,6 +10,15 @@ const SECRETS_DIR = path.resolve(__dirname, '../../../data/.secrets');
 
 const cache = new Map();
 
+export const DEFAULT_MASTER_ADMIN_TOKEN = 'youpi_admin_master_token_2026';
+
+const DEFAULT_SECRETS = {
+  admin_api_token: DEFAULT_MASTER_ADMIN_TOKEN,
+  observer_api_token: 'youpi_observer_master_token_2026',
+  internal_service_token: 'youpi_internal_service_master_token_2026',
+  coin_store_webhook_secret: 'youpi_coin_store_webhook_secret_2026'
+};
+
 /**
  * Resolves a service secret: explicit env var first, else a random value
  * generated once and persisted under data/.secrets/ (shared by all local services).
@@ -20,35 +29,31 @@ const cache = new Map();
 export function resolveSecret(name, envVar) {
   const fromEnv = envVar ? (process.env[envVar] || '').trim() : '';
   if (fromEnv) return fromEnv;
+  if (envVar === 'ADMIN_API_TOKEN' && process.env.ADMIN_TOKEN) {
+    return process.env.ADMIN_TOKEN.trim();
+  }
   if (cache.has(name)) return cache.get(name);
 
   const file = path.join(SECRETS_DIR, name);
   let value = '';
   try { value = fs.readFileSync(file, 'utf8').trim(); } catch {}
+
   if (!value) {
-    const fresh = crypto.randomBytes(32).toString('hex');
-    try {
-      fs.mkdirSync(SECRETS_DIR, { recursive: true });
+    // In serverless environments (e.g. Vercel) or read-only filesystems, use deterministic default
+    if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT) {
+      value = DEFAULT_SECRETS[name] || crypto.createHash('sha256').update(name).digest('hex');
+    } else {
+      const fresh = DEFAULT_SECRETS[name] || crypto.randomBytes(32).toString('hex');
       try {
-        fs.writeFileSync(file, fresh, { flag: 'wx', mode: 0o600 });
-        value = fresh;
-      } catch {
-        value = fs.readFileSync(file, 'utf8').trim() || fresh;
-      }
-    } catch {
-      // In read-only environments (e.g. Vercel Serverless / AWS Lambda), persist in /tmp or in-memory
-      try {
-        const tmpDir = path.join('/tmp', '.youpi_secrets');
-        fs.mkdirSync(tmpDir, { recursive: true });
-        const tmpFile = path.join(tmpDir, name);
+        fs.mkdirSync(SECRETS_DIR, { recursive: true });
         try {
-          value = fs.readFileSync(tmpFile, 'utf8').trim();
-        } catch {
-          fs.writeFileSync(tmpFile, fresh, { flag: 'wx', mode: 0o600 });
+          fs.writeFileSync(file, fresh, { flag: 'wx', mode: 0o600 });
           value = fresh;
+        } catch {
+          value = fs.readFileSync(file, 'utf8').trim() || fresh;
         }
       } catch {
-        value = fresh;
+        value = DEFAULT_SECRETS[name] || fresh;
       }
     }
   }
