@@ -502,8 +502,21 @@ export function registerPollerRoutes(server, ctx) {
     const merchantId = merchant ? merchant.id : (req.query.merchantId || '00000000-0000-0000-0000-000000000001');
 
     // Canonical runtime URL derivation (Part C2)
-    const runtime = resolveRuntimeUrls(merchant?.branding || {});
-    const baseUrl = runtime.apiUrl;
+    let baseUrl = req.query.baseUrl;
+    if (!baseUrl) {
+      const proto = req.headers['x-forwarded-proto'] || (req.socket?.encrypted ? 'https' : 'http');
+      const forwardedHost = req.headers['x-forwarded-host'] || req.headers['host'];
+      if (forwardedHost && !forwardedHost.startsWith('localhost') && !forwardedHost.startsWith('127.0.0.1')) {
+        baseUrl = `${proto}://${forwardedHost}`;
+      } else if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+        baseUrl = `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+      } else if (process.env.VERCEL_URL) {
+        baseUrl = `https://${process.env.VERCEL_URL}`;
+      } else {
+        const runtime = resolveRuntimeUrls(merchant?.branding || {});
+        baseUrl = runtime.apiUrl;
+      }
+    }
     const token = enrollmentSecret;
     const sessionId = crypto.randomUUID();
     const expiresAt = Date.now() + (10 * 60 * 1000); // 10 minutes

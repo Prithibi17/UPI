@@ -5017,12 +5017,19 @@
               Native Android observer app captures credit SMS notifications in real-time from bank-linked handsets.
             </p>
             <div
-              style="background:var(--bg-surface); border:1px solid var(--border); border-radius:0.5rem; padding:1rem; margin-bottom:1rem;">
-              <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-bottom:0.4rem;">Enrollment
-                Secret:</div>
-              <code id="smsTokenVal" style="color:var(--info); font-weight:700; font-size:0.85rem;">Loading...</code>
-              <button class="btn btn-secondary" style="font-size:0.7rem; padding:0.2rem 0.5rem; margin-left:0.5rem;"
-                onclick="copySmsToken()">📋 Copy</button>
+              style="background:var(--bg-surface); border:1px solid var(--border); border-radius:0.5rem; padding:1rem; margin-bottom:1rem; display:flex; flex-direction:column; gap:0.5rem;">
+              <div>
+                <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:0.25rem;">Server URL (for Manual Connect):</div>
+                <code id="smsGatewayUrlCard" style="color:#10b981; font-weight:700; font-size:0.82rem;">Loading...</code>
+                <button class="btn btn-secondary" style="font-size:0.7rem; padding:0.2rem 0.5rem; margin-left:0.5rem;"
+                  onclick="copyGatewayUrl()">📋 Copy</button>
+              </div>
+              <div>
+                <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:0.25rem;">Enrollment Secret:</div>
+                <code id="smsTokenVal" style="color:var(--info); font-weight:700; font-size:0.82rem;">Loading...</code>
+                <button class="btn btn-secondary" style="font-size:0.7rem; padding:0.2rem 0.5rem; margin-left:0.5rem;"
+                  onclick="copySmsToken()">📋 Copy</button>
+              </div>
             </div>
             <div style="display:flex; gap:0.5rem;">
               <a class="btn btn-success" href="/api/v1/admin/sms-gateway/download-apk" download="youpi-sms-gateway.apk">📲 Download
@@ -6948,10 +6955,17 @@
               style="width:240px; height:240px; margin:0 auto; background:#ffffff; border-radius:0.75rem; padding:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(0,0,0,0.5);">
               Loading Pairing QR...
             </div>
-            <div style="font-size:0.8rem; color:#94a3b8; margin:0.75rem 0;">
-              Enrollment Secret: <code id="smsTokenVal2" style="color:#38bdf8; font-weight:700;">Loading...</code>
-              <button class="btn btn-secondary" style="font-size:0.7rem; padding:0.2rem 0.5rem; margin-left:0.5rem;"
-                onclick="copySmsToken()">📋 Copy</button>
+            <div style="font-size:0.8rem; color:#94a3b8; margin:0.75rem 0; display:flex; flex-direction:column; gap:0.4rem; align-items:center;">
+              <div>
+                Server URL: <code id="smsGatewayUrl" style="color:#10b981; font-weight:700;">Loading...</code>
+                <button class="btn btn-secondary" style="font-size:0.7rem; padding:0.2rem 0.5rem; margin-left:0.5rem;"
+                  onclick="copyGatewayUrl()">📋 Copy</button>
+              </div>
+              <div>
+                Enrollment Secret: <code id="smsTokenVal2" style="color:#38bdf8; font-weight:700;">Loading...</code>
+                <button class="btn btn-secondary" style="font-size:0.7rem; padding:0.2rem 0.5rem; margin-left:0.5rem;"
+                  onclick="copySmsToken()">📋 Copy</button>
+              </div>
             </div>
             <div style="display:flex; justify-content:center; gap:0.5rem;">
               <button class="btn btn-secondary" onclick="fetchSmsPairQr()">🔄 Refresh QR</button>
@@ -9763,7 +9777,8 @@
       const box = document.getElementById('smsPairQrBox');
       if (!box) return;
       try {
-        const res = await fetch(`${API_BASE}/api/v1/admin/sms-gateway/pair-qr`);
+        const currentOrigin = window.location.origin;
+        const res = await fetch(`${API_BASE}/api/v1/admin/sms-gateway/pair-qr?baseUrl=${encodeURIComponent(currentOrigin)}`);
         if (!res.ok) throw new Error();
         const data = await res.json();
         const qrSvg = data.pairingQrSvg || data.qrSvg;
@@ -9781,8 +9796,22 @@
         const tok2 = document.getElementById('smsTokenVal2');
         if (tok1 && data.enrollmentToken) tok1.textContent = data.enrollmentToken;
         if (tok2 && data.enrollmentToken) tok2.textContent = data.enrollmentToken;
+        const gwEl = document.getElementById('smsGatewayUrl');
+        if (gwEl) gwEl.textContent = data.serverUrl || currentOrigin;
+        const gwCard = document.getElementById('smsGatewayUrlCard');
+        if (gwCard) gwCard.textContent = data.serverUrl || currentOrigin;
       } catch (e) {
         box.innerHTML = '<span style="font-size:0.75rem; color:#ef4444;">Failed to load QR</span>';
+      }
+    }
+
+    function copyGatewayUrl() {
+      const el = document.getElementById('smsGatewayUrl') || document.getElementById('smsGatewayUrlCard');
+      const val = (el && el.textContent && el.textContent !== 'Loading...') ? el.textContent.trim() : window.location.origin;
+      if (val) {
+        navigator.clipboard.writeText(val).then(() => {
+          showAdminToast('Gateway Server URL copied!');
+        });
       }
     }
 
