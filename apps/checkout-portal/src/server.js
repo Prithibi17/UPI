@@ -1,4 +1,5 @@
 import http from 'node:http';
+import https from 'node:https';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -179,7 +180,7 @@ export class CheckoutServer {
       }
     } catch {}
 
-    this.apiBaseUrl = options.apiBaseUrl || process.env.BASE_PAYMENT_API_URL || 'http://localhost:6100';
+    this.apiBaseUrl = options.apiBaseUrl || process.env.PAYMENT_API_URL || process.env.BASE_PAYMENT_API_URL || 'http://localhost:6100';
     this.htmlTemplatePath = path.join(__dirname, 'views', 'checkout.html');
     this.sdkScriptPath = path.join(__dirname, 'sdk', 'youpi-checkout.js');
     this.template = fs.readFileSync(this.htmlTemplatePath, 'utf8');
@@ -187,8 +188,8 @@ export class CheckoutServer {
 
   async fetchPaymentState(paymentId) {
     try {
-      const internalPort = process.env.PAYMENT_API_PORT || 6100;
-      const res = await fetch(`http://127.0.0.1:${internalPort}/api/v1/checkout/${encodeURIComponent(paymentId)}/state`, {
+      const stateUrl = new URL(`/api/v1/checkout/${encodeURIComponent(paymentId)}/state`, this.apiBaseUrl);
+      const res = await fetch(stateUrl.toString(), {
         headers: { 'X-Internal-Render': 'true', 'X-Internal-Token': getInternalServiceToken() }
       });
       if (!res.ok) return null;
@@ -309,16 +310,20 @@ export class CheckoutServer {
 
       // Transparent API Proxy: /api/* -> Payment Core REST API
       if (pathname.startsWith('/api/')) {
-        const targetPort = Number(process.env.PAYMENT_API_PORT || 6100);
-        const proxyReq = http.request({
-          hostname: '127.0.0.1',
+        const parsedApi = new URL(this.apiBaseUrl);
+        const targetHostname = parsedApi.hostname || '127.0.0.1';
+        const targetPort = Number(parsedApi.port || (parsedApi.protocol === 'https:' ? 443 : (process.env.PAYMENT_API_PORT || 6100)));
+        const client = parsedApi.protocol === 'https:' ? https : http;
+
+        const proxyReq = client.request({
+          hostname: targetHostname,
           port: targetPort,
           path: req.url,
           method: req.method,
           headers: {
-            ...sanitizedForwardHeaders(req, `localhost:${targetPort}`),
+            ...sanitizedForwardHeaders(req, `${targetHostname}:${targetPort}`),
             'x-forwarded-host': req.headers.host || '',
-            'x-forwarded-proto': req.headers['x-forwarded-proto'] || 'https'
+            'x-forwarded-proto': req.headers['x-forwarded-proto'] || (parsedApi.protocol === 'https:' ? 'https' : 'http')
           }
         }, (proxyRes) => {
           res.writeHead(proxyRes.statusCode, proxyRes.headers);

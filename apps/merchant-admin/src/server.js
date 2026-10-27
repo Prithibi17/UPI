@@ -1,4 +1,5 @@
 import http from 'node:http';
+import https from 'node:https';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -62,7 +63,7 @@ export class AdminServer {
    */
   constructor(options = {}) {
     this.db = options.db || getDatabase();
-    this.apiBaseUrl = options.apiBaseUrl || process.env.BASE_PAYMENT_API_URL || 'http://localhost:6100';
+    this.apiBaseUrl = options.apiBaseUrl || process.env.PAYMENT_API_URL || process.env.BASE_PAYMENT_API_URL || 'http://localhost:6100';
     this.merchantRepo = new MerchantRepository(this.db);
     this.ticketRepo = new SupportTicketRepository(this.db);
     this.htmlTemplatePath = path.join(__dirname, 'views', 'admin.html');
@@ -163,19 +164,22 @@ export class AdminServer {
 
       // Transparent API Proxy: /api/* -> Payment Core REST API
       if (pathname.startsWith('/api/')) {
-        const targetPort = Number(process.env.PAYMENT_API_PORT || 6100);
+        const parsedApi = new URL(this.apiBaseUrl);
+        const targetHostname = parsedApi.hostname || '127.0.0.1';
+        const targetPort = Number(parsedApi.port || (parsedApi.protocol === 'https:' ? 443 : (process.env.PAYMENT_API_PORT || 6100)));
+        const client = parsedApi.protocol === 'https:' ? https : http;
         const defaultMerchant = this.merchantRepo.getDefault ? this.merchantRepo.getDefault() : (this.merchantRepo.findById('00000000-0000-0000-0000-000000000001') || this.merchantRepo.findAll()[0]);
         const defaultMerchantId = defaultMerchant?.id || '00000000-0000-0000-0000-000000000001';
-        const proxyReq = http.request({
-          hostname: '127.0.0.1',
+        const proxyReq = client.request({
+          hostname: targetHostname,
           port: targetPort,
           path: req.url,
           method: req.method,
           headers: {
-            ...sanitizedForwardHeaders(req, `localhost:${targetPort}`),
+            ...sanitizedForwardHeaders(req, `${targetHostname}:${targetPort}`),
             'x-merchant-id': req.headers['x-merchant-id'] || defaultMerchantId,
             'x-forwarded-host': req.headers.host || '',
-            'x-forwarded-proto': req.headers['x-forwarded-proto'] || 'http'
+            'x-forwarded-proto': req.headers['x-forwarded-proto'] || (parsedApi.protocol === 'https:' ? 'https' : 'http')
           }
         }, (proxyRes) => {
           res.writeHead(proxyRes.statusCode, proxyRes.headers);

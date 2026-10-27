@@ -1,0 +1,153 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "payment-api": {
+      "root": "apps/payment-api",
+      "runtime": "node"
+    },
+    "checkout-portal": {
+      "root": "apps/checkout-portal",
+      "runtime": "node",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "payment-api",
+          "format": "url",
+          "env": "PAYMENT_API_URL"
+        }
+      ]
+    },
+    "merchant-admin": {
+      "root": "apps/merchant-admin",
+      "runtime": "node",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "payment-api",
+          "format": "url",
+          "env": "PAYMENT_API_URL"
+        }
+      ]
+    },
+    "coin-wallet-store": {
+      "root": "apps/coin-wallet-store",
+      "runtime": "node",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "payment-api",
+          "format": "url",
+          "env": "PAYMENT_API_URL"
+        },
+        {
+          "type": "service",
+          "service": "checkout-portal",
+          "format": "url",
+          "env": "CHECKOUT_URL"
+        }
+      ]
+    },
+    "payment-help": {
+      "root": "apps/payment-help",
+      "runtime": "node"
+    },
+    "sms-observer": {
+      "root": "apps/sms-observer",
+      "runtime": "node",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "payment-api",
+          "format": "url",
+          "env": "PAYMENT_API_URL"
+        }
+      ]
+    },
+    "gmail-observer": {
+      "root": "apps/gmail-observer",
+      "runtime": "node",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "payment-api",
+          "format": "url",
+          "env": "PAYMENT_API_URL"
+        }
+      ]
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "payment-api"
+      }
+    },
+    {
+      "source": "/health",
+      "destination": {
+        "service": "payment-api"
+      }
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": {
+        "service": "merchant-admin"
+      }
+    },
+    {
+      "source": "/admin",
+      "destination": {
+        "service": "merchant-admin"
+      }
+    },
+    {
+      "source": "/checkout/(.*)",
+      "destination": {
+        "service": "checkout-portal"
+      }
+    },
+    {
+      "source": "/pay/(.*)",
+      "destination": {
+        "service": "checkout-portal"
+      }
+    },
+    {
+      "source": "/sdk/(.*)",
+      "destination": {
+        "service": "checkout-portal"
+      }
+    },
+    {
+      "source": "/help/(.*)",
+      "destination": {
+        "service": "payment-help"
+      }
+    },
+    {
+      "source": "/help",
+      "destination": {
+        "service": "payment-help"
+      }
+    },
+    {
+      "source": "/gmail/oauth/(.*)",
+      "destination": {
+        "service": "gmail-observer"
+      }
+    },
+    {
+      "source": "/store/(.*)",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/",
+      "destination": {
+        "service": "checkout-portal"
+      }
+    }
+  ]
+}
