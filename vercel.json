@@ -151,6 +151,12 @@
       }
     },
     {
+      "source": "/store",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
       "source": "/",
       "destination": {
         "service": "checkout-portal"
