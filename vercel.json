@@ -85,6 +85,24 @@
   },
   "rewrites": [
     {
+      "source": "/api/checkout",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/api/wallet-balance",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/api/webhook",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
       "source": "/api/(.*)",
       "destination": {
         "service": "payment-api"
