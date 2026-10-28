@@ -590,7 +590,8 @@ export function registerCheckoutRoutes(server, ctx) {
     const requestingDeviceId = req.headers['x-device-id'] || null;
     let hasActiveSessionConflict = false;
     let conflictingSession = null;
-    const conflictingActive = ctx.sessionRepo.findConflictingActiveSession
+    const isInternalOrAdmin = isInternalServiceRequest(req) || isAdminRequest(req);
+    const conflictingActive = (!isInternalOrAdmin && ctx.sessionRepo.findConflictingActiveSession)
       ? ctx.sessionRepo.findConflictingActiveSession({
           customerId: session.customerId,
           deviceId: requestingDeviceId || session.deviceId || null,
@@ -599,7 +600,7 @@ export function registerCheckoutRoutes(server, ctx) {
       : null;
 
     if (conflictingActive && conflictingActive.id !== session.id && [PaymentStatus.INITIATED, PaymentStatus.ACTIVE, PaymentStatus.QUEUED].includes(session.status)) {
-      if (conflictingActive.deviceId && (!requestingDeviceId || requestingDeviceId !== conflictingActive.deviceId)) {
+      if (conflictingActive.deviceId && requestingDeviceId && requestingDeviceId !== conflictingActive.deviceId) {
         // CASE 3: Active session on another device -> DUPLICATE_SESSION_DETECTED
         HttpServer.json(res, 409, {
           error: 'DUPLICATE_SESSION_DETECTED',
@@ -613,16 +614,23 @@ export function registerCheckoutRoutes(server, ctx) {
         return;
       }
 
-      // CASE 2: Active session on same device -> CONTINUE ACTIVE SESSION or END & START NEW
-      hasActiveSessionConflict = true;
-      conflictingSession = {
-        id: conflictingActive.id,
-        paymentId: conflictingActive.id,
-        orderId: conflictingActive.orderId,
-        amount: toRupeesString(conflictingActive.amountPaise),
-        status: conflictingActive.status,
-        checkoutUrl: `/checkout/${conflictingActive.id}`
-      };
+      // If guest checkout on the same device initiates a new order, cancel older abandoned guest session
+      if (!session.customerId && !conflictingActive.customerId && session.status === PaymentStatus.INITIATED) {
+        try {
+          ctx.sessionRepo.transitionToTerminal(conflictingActive.id, PaymentStatus.CANCELLED, 'SUPERSEDED_BY_NEW_ORDER');
+        } catch {}
+      } else {
+        // CASE 2: Active session on same device -> CONTINUE ACTIVE SESSION or END & START NEW
+        hasActiveSessionConflict = true;
+        conflictingSession = {
+          id: conflictingActive.id,
+          paymentId: conflictingActive.id,
+          orderId: conflictingActive.orderId,
+          amount: toRupeesString(conflictingActive.amountPaise),
+          status: conflictingActive.status,
+          checkoutUrl: `/checkout/${conflictingActive.id}`
+        };
+      }
     }
 
     // Build URI and compute remaining time ONLY if session is already active (e.g. after customer bound or counter active)
@@ -640,6 +648,8 @@ export function registerCheckoutRoutes(server, ctx) {
       }
       if (session.expiresAt) {
         timeRemainingSeconds = Math.max(0, Math.ceil((session.expiresAt.getTime() - now) / 1000));
+      } else {
+        timeRemainingSeconds = 300;
       }
     }
 

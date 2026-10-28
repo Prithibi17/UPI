@@ -2130,7 +2130,7 @@
         queuePollTimer = null;
       }
 
-      if (data.status === 'ACTIVE' || (data.status === 'INITIATED' && (data.timeRemainingSeconds > 0 || data.expiresAt))) {
+      if (data.status === 'ACTIVE' || data.status === 'INITIATED') {
         renderMethodSelectorBar(data);
 
         hideAllContent();
@@ -2164,7 +2164,7 @@
 
           const btnContinue = document.getElementById('btnContinuePayment');
 
-          const remainingSec = (data.timeRemainingSeconds !== undefined && data.timeRemainingSeconds !== null) ? Number(data.timeRemainingSeconds) : 300;
+          const remainingSec = (data.timeRemainingSeconds !== undefined && data.timeRemainingSeconds !== null && Number(data.timeRemainingSeconds) > 0) ? Number(data.timeRemainingSeconds) : 300;
           const targetExpiry = data.expiresAt || new Date(Date.now() + remainingSec * 1000).toISOString();
 
           if (remainingSec <= 0 && data.status === 'ACTIVE') {
