@@ -2425,7 +2425,7 @@ export function registerAdminRoutes(server, ctx) {
     { id: 'payment-api', name: 'Payment Core API', port: Number(process.env.PAYMENT_API_PORT || 6100) },
     { id: 'merchant-admin', name: 'Merchant Admin Dashboard', port: Number(process.env.MERCHANT_ADMIN_PORT || 6001) },
     { id: 'checkout-portal', name: 'Checkout Portal', port: Number(process.env.CHECKOUT_PORTAL_PORT || 7000) },
-    { id: 'coin-wallet-store', name: 'YOUPI Showcase Store (Demo)', port: Number(process.env.COIN_STORE_PORT || 5000) },
+    { id: 'coin-wallet-store', name: 'YOUPI Store', port: Number(process.env.COIN_STORE_PORT || 5000) },
     { id: 'gmail-observer', name: 'Gmail Payment Observer', port: Number(process.env.GMAIL_OBSERVER_PORT || 6003) },
     { id: 'sms-observer', name: 'Google Messages / SMS Observer (Legacy)', port: Number(process.env.SMS_OBSERVER_PORT || 6002) },
     { id: 'control-center', name: 'Unified Control Center', port: Number(process.env.CONTROL_CENTER_PORT || 8090) }

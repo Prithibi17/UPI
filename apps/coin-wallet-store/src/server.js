@@ -361,7 +361,7 @@ export class CoinWalletStoreServer {
       // GET /order-success or /success
       if ((pathname === '/order-success' || pathname === '/success') && (method === 'GET' || method === 'HEAD')) {
         try { this.orderSuccessHtml = fs.readFileSync(path.join(__dirname, 'order-success.html'), 'utf8'); } catch {}
-        const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId') || 'ORDER-DEMO';
+        const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId') || 'ORDER-REAL';
         const amount = url.searchParams.get('amount') || '499.00';
         const utr = url.searchParams.get('utr') || url.searchParams.get('bankRef') || '123456789012';
         const mode = url.searchParams.get('mode') || url.searchParams.get('payment_mode') || 'UPI';
@@ -388,7 +388,7 @@ export class CoinWalletStoreServer {
       // GET /order-failed or /failed
       if ((pathname === '/order-failed' || pathname === '/failed') && (method === 'GET' || method === 'HEAD')) {
         try { this.orderFailedHtml = fs.readFileSync(path.join(__dirname, 'order-failed.html'), 'utf8'); } catch {}
-        const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId') || 'ORDER-DEMO';
+        const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId') || 'ORDER-REAL';
         const reason = url.searchParams.get('reason') || 'Transaction verification timed out or declined.';
         let rendered = renderTemplate(this.orderFailedHtml, {
           ORDER_ID: orderId,
@@ -410,7 +410,7 @@ export class CoinWalletStoreServer {
       // GET /order-suspicious or /suspicious
       if ((pathname === '/order-suspicious' || pathname === '/suspicious') && (method === 'GET' || method === 'HEAD')) {
         try { this.orderSuspiciousHtml = fs.readFileSync(path.join(__dirname, 'order-suspicious.html'), 'utf8'); } catch {}
-        const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId') || 'ORDER-DEMO';
+        const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId') || 'ORDER-REAL';
         let rendered = renderTemplate(this.orderSuspiciousHtml, { ORDER_ID: orderId });
 
         res.writeHead(200, {
@@ -426,7 +426,7 @@ export class CoinWalletStoreServer {
       // GET /order-expired or /expired
       if ((pathname === '/order-expired' || pathname === '/expired') && (method === 'GET' || method === 'HEAD')) {
         try { this.orderExpiredHtml = fs.readFileSync(path.join(__dirname, 'order-expired.html'), 'utf8'); } catch {}
-        const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId') || 'ORDER-DEMO';
+        const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId') || 'ORDER-REAL';
         let rendered = renderTemplate(this.orderExpiredHtml, { ORDER_ID: orderId });
 
         res.writeHead(200, {
@@ -442,7 +442,7 @@ export class CoinWalletStoreServer {
       // GET /order-cancelled or /cancelled
       if ((pathname === '/order-cancelled' || pathname === '/cancelled') && (method === 'GET' || method === 'HEAD')) {
         try { this.orderCancelledHtml = fs.readFileSync(path.join(__dirname, 'order-cancelled.html'), 'utf8'); } catch {}
-        const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId') || 'ORDER-DEMO';
+        const orderId = url.searchParams.get('order_id') || url.searchParams.get('orderId') || 'ORDER-REAL';
         let rendered = renderTemplate(this.orderCancelledHtml, { ORDER_ID: orderId });
 
         res.writeHead(200, {

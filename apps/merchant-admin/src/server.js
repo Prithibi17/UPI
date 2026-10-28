@@ -161,7 +161,7 @@ export class AdminServer {
                 { id: 'payment-api', name: 'Payment Core API', port: Number(process.env.PAYMENT_API_PORT || 6100), status: 'RUNNING', pid: process.pid, uptimeSeconds: Math.floor(process.uptime()) },
                 { id: 'merchant-admin', name: 'Merchant Admin Dashboard', port: Number(process.env.MERCHANT_ADMIN_PORT || 6001), status: 'RUNNING', pid: process.pid, uptimeSeconds: Math.floor(process.uptime()) },
                 { id: 'checkout-portal', name: 'Checkout Portal', port: Number(process.env.CHECKOUT_PORTAL_PORT || 7000), status: 'RUNNING', pid: process.pid, uptimeSeconds: Math.floor(process.uptime()) },
-                { id: 'coin-wallet-store', name: 'YOUPI Showcase Store (Demo)', port: Number(process.env.COIN_STORE_PORT || 5000), status: 'RUNNING', pid: process.pid, uptimeSeconds: Math.floor(process.uptime()) },
+                { id: 'coin-wallet-store', name: 'YOUPI Store', port: Number(process.env.COIN_STORE_PORT || 5000), status: 'RUNNING', pid: process.pid, uptimeSeconds: Math.floor(process.uptime()) },
                 { id: 'gmail-observer', name: 'Gmail Payment Observer', port: Number(process.env.GMAIL_OBSERVER_PORT || 6003), status: 'RUNNING', pid: process.pid, uptimeSeconds: Math.floor(process.uptime()) },
                 { id: 'sms-observer', name: 'Google Messages / SMS Observer (Legacy)', port: Number(process.env.SMS_OBSERVER_PORT || 6002), status: 'RUNNING', pid: process.pid, uptimeSeconds: Math.floor(process.uptime()) },
                 { id: 'control-center', name: 'Unified Control Center', port: ccPort, status: 'RUNNING', pid: process.pid, uptimeSeconds: Math.floor(process.uptime()) }

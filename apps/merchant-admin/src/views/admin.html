@@ -5132,7 +5132,7 @@
                   <label class="yp-field-label">Merchant Store / Business Name</label>
                   <div class="yp-input-wrap">
                     <span class="yp-input-icon"><svg class="i" aria-hidden="true"><use href="#i-building-storefront"/></svg></span>
-                    <input id="settingBusinessName" type="text" class="yp-input-field" placeholder="e.g. YOUPI Demo Store"
+                    <input id="settingBusinessName" type="text" class="yp-input-field" placeholder="e.g. YOUPI Store"
                       oninput="updateLiveWhiteLabelPreview()" />
                   </div>
                 </div>
@@ -5443,7 +5443,7 @@
                         <img id="mockupAvatarImg" alt="Logo" style="display:none; width:100%; height:100%; object-fit:contain;" />
                       </div>
                       <div>
-                        <div id="mockupHeaderMerchantName" class="yp-phone-merchant-title">YOUPI Demo Store</div>
+                        <div id="mockupHeaderMerchantName" class="yp-phone-merchant-title">YOUPI Store</div>
                         <div id="mockupTrustBadge" class="yp-phone-verified-tag">
                           <span><svg class="i" aria-hidden="true"><use href="#i-shield-check"/></svg></span>
                           <span id="mockupTrustBadgeText">YOUPI PG Verified Business</span>
@@ -7728,7 +7728,7 @@
     })();
 
     const API_BASE = "{{API_BASE_URL}}";
-    let currentEnvMode = 'localhost';
+    let currentEnvMode = (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') ? 'production' : 'localhost';
     let currentDomainPrefix = 'pay';
     let currentDomainTld = '';
     let currentSellingMode = 'ONLINE';
@@ -8033,7 +8033,7 @@
         <tr style="${isStore ? 'background:rgba(56,189,248,0.03);' : ''}">
           <td>
             <strong>${escapeHtml(s.name)}</strong>
-            ${isStore ? '<span class="badge badge-info" style="font-size:0.68rem; margin-left:0.4rem;">Demo Store</span>' : ''}
+            ${isStore ? '<span class="badge badge-info" style="font-size:0.68rem; margin-left:0.4rem;">Storefront</span>' : ''}
             <div style="font-size:0.75rem; color:var(--text-muted); font-family:monospace;">${escapeHtml(s.id)}</div>
           </td>
           <td><code style="color:#f59e0b; background:#070c17; padding:2px 6px; border-radius:4px; font-weight:700;">${s.port}</code></td>
@@ -9063,7 +9063,11 @@
           setVal('settingTermsUrl', branding.termsUrl);
 
           // Canonical Cloudflare Configuration & Environment
-          currentEnvMode = branding.envMode || mData.envMode || 'localhost';
+          const detectedMode = (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') ? 'production' : 'localhost';
+          currentEnvMode = branding.envMode || mData.envMode || detectedMode;
+          if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && currentEnvMode === 'localhost') {
+            currentEnvMode = 'production';
+          }
           currentDomainPrefix = branding.deploymentPrefix || branding.domainPrefix || mData.deploymentPrefix || mData.domainPrefix || 'pay';
           currentDomainTld = branding.cloudflareDomain || branding.domainTld || mData.cloudflareDomain || mData.domainTld || '';
 
@@ -9512,10 +9516,10 @@
         },
         {
           key: 'store',
-          serviceName: '5. Demo Store',
+          serviceName: '5. Storefront',
           hostname: mkHost(`${cleanPrefix}-store`),
           serviceUrl: 'http://localhost:5000',
-          purpose: 'Reference/demo store',
+          purpose: 'Live digital storefront',
           optional: true
         }
       ];
@@ -9525,7 +9529,7 @@
         <div>
           <div style="display:flex; align-items:center; gap:0.5rem;">
             <span style="font-weight:700; color:#f1f5f9; font-size:0.95rem;">${escapeHtml(r.serviceName)}</span>
-            ${r.optional ? '<span class="badge badge-warning" style="font-size:0.68rem; font-weight:700;">OPTIONAL — DEMO STORE</span>' : ''}
+            ${r.optional ? '<span class="badge badge-warning" style="font-size:0.68rem; font-weight:700;">STOREFRONT</span>' : ''}
           </div>
           <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">${escapeHtml(r.purpose)}</div>
           <div style="margin-top:0.5rem; display:flex; flex-direction:column; gap:0.3rem; font-size:0.82rem;">
@@ -9593,13 +9597,13 @@
    Purpose:
        Gmail OAuth callback and Gmail observation service
 
-5. Demo Store (OPTIONAL)
+5. Storefront (OPTIONAL)
    Public Hostname:
        ${prefix}-store.${domain}
    Service URL:
        http://localhost:5000
    Purpose:
-       Reference/demo store`;
+       Live digital storefront`;
 
       navigator.clipboard.writeText(text).then(() => {
         showAdminToast('All 5 Cloudflare mappings copied to clipboard!');
@@ -12101,6 +12105,7 @@
     }
 
     // --- INITIALIZATION ---
+    setEnvMode(currentEnvMode, false);
     const validSections = ['dashboard', 'operations', 'storeSettings', 'developerHub', 'security'];
     const hashSec = (window.location.hash || '').replace('#', '').trim();
     const searchSec = new URLSearchParams(window.location.search).get('section');
