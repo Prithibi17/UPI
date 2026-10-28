@@ -19,10 +19,13 @@
 
 <body>
 
-  <!-- include:partials/splash.html -->
+  <!-- TOAST NOTIFICATION -->
+  <div id="ypgToast" class="ypg-toast"><img src="/icons/upi.svg" alt="UPI" style="height:12px; vertical-align:middle; filter:brightness(0) invert(1); margin-right:4px;" /> Direct UPI QR is active for instant banking verification</div>
 
   <!-- YOUPI PG CHECKOUT CARD / DRAWER WRAPPER -->
   <div class="ypg-wrapper">
+
+    <!-- include:partials/splash.html -->
 
     <!-- include:partials/sidebar.html -->
 
@@ -138,7 +141,7 @@
       if (splash && !splash.classList.contains('fade-out')) {
         setTimeout(() => {
           splash.classList.add('fade-out');
-        }, 550);
+        }, 700);
       }
     }
 
@@ -1857,7 +1860,7 @@
         if (splashDefaultShield) splashDefaultShield.style.display = 'none';
       }
       if (splashSecuredText) {
-        splashSecuredText.textContent = b.hidePoweredBy ? (b.appName || '256-Bit Bank Encryption') : (b.appName || 'YouPI PG');
+        splashSecuredText.textContent = b.hidePoweredBy ? (b.appName || '256-Bit Bank Encryption') : (b.appName || 'Moon');
       }
 
       // 12. Legal Disclaimer Strip

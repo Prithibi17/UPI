@@ -149,25 +149,53 @@
       }
     }
 
-    /* --- 1. INITIAL LOADING SPLASH SCREEN (YOUPI PG EMBLEM) --- */
+    /* --- 1. INITIAL LOADING SPLASH SCREEN (MOON ORBITAL BRANDING) --- */
     .ypg-splash-screen {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: #f4f5f7;
-      z-index: 100;
+      background-color: #ffffff;
+      background-image:
+        radial-gradient(circle 420px at 0% 0%, rgba(56, 189, 248, 0.32) 0%, rgba(96, 165, 250, 0.15) 35%, transparent 70%),
+        radial-gradient(circle 460px at 100% 100%, rgba(37, 99, 235, 0.30) 0%, rgba(147, 51, 234, 0.16) 40%, transparent 70%);
+      z-index: 1000;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.4s ease, visibility 0.4s ease;
+      transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.45s ease;
+      overflow: hidden;
     }
 
     .ypg-splash-screen.fade-out {
       opacity: 0;
       visibility: hidden;
+      pointer-events: none;
+    }
+
+    .ypg-splash-ambient-top {
+      position: absolute;
+      top: -70px;
+      left: -70px;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.38) 0%, rgba(96, 165, 250, 0.16) 50%, transparent 70%);
+      filter: blur(36px);
+      pointer-events: none;
+    }
+
+    .ypg-splash-ambient-bottom {
+      position: absolute;
+      bottom: -70px;
+      right: -70px;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.36) 0%, rgba(147, 51, 234, 0.20) 50%, transparent 70%);
+      filter: blur(36px);
       pointer-events: none;
     }
 
@@ -177,69 +205,168 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin-bottom: 70px;
+      width: 320px;
+      height: 320px;
+      margin-bottom: 28px;
     }
 
-    .ypg-shield-orbit-box {
+    .ypg-orbit-system {
       position: relative;
-      width: 110px;
-      height: 110px;
+      width: 290px;
+      height: 290px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .ypg-shield-icon-svg {
-      width: 82px;
-      height: 94px;
-      filter: drop-shadow(0 8px 18px rgba(11, 99, 229, 0.3));
-      animation: ypgPulseShield 2s infinite ease-in-out;
-    }
-
-    @keyframes ypgPulseShield {
-
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.04);
-      }
-    }
-
-    .ypg-orbit-dot {
+    /* Concentric Rings */
+    .ypg-orbit-ring {
       position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .ypg-orbit-ring-3 {
+      width: 270px;
+      height: 270px;
+      border: 1.5px solid rgba(147, 197, 253, 0.6);
+      animation: ypgOrbitSpin 14s linear infinite;
+    }
+
+    .ypg-orbit-ring-2 {
+      width: 196px;
+      height: 196px;
+      border: 1.5px solid rgba(147, 197, 253, 0.7);
+      animation: ypgOrbitSpinRev 9s linear infinite;
+    }
+
+    .ypg-orbit-ring-1 {
+      width: 130px;
+      height: 130px;
+      border: 1.5px solid rgba(191, 219, 254, 0.65);
+      animation: ypgOrbitSpin 6s linear infinite;
+    }
+
+    /* Orbiting Nodes */
+    .ypg-orbit-node {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .ypg-node-blue-lg {
+      top: -8px;
+      left: calc(50% - 8px);
+      width: 16px;
+      height: 16px;
+      background: #1d4ed8;
+      box-shadow: 0 0 14px rgba(29, 78, 216, 0.85), 0 0 4px #60a5fa;
+    }
+
+    .ypg-node-purple {
+      bottom: -7px;
+      left: calc(50% - 7px);
+      width: 14px;
+      height: 14px;
+      background: #9333ea;
+      box-shadow: 0 0 14px rgba(147, 51, 234, 0.85), 0 0 4px #c084fc;
+    }
+
+    .ypg-node-purple-sm {
+      top: calc(50% - 5px);
+      right: -6px;
+      width: 11px;
+      height: 11px;
+      background: #a855f7;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.8), 0 0 3px #e9d5ff;
+    }
+
+    .ypg-node-cyan {
+      top: -6px;
+      left: calc(50% - 6px);
       width: 12px;
       height: 12px;
-      background: #0b63e5;
-      border: 2px solid #ffffff;
-      border-radius: 50%;
-      top: 8px;
-      left: 20px;
-      box-shadow: 0 0 8px rgba(11, 99, 229, 0.6);
-      animation: ypgOrbitAnimation 1.5s infinite linear;
+      background: #06b6d4;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.8), 0 0 3px #a5f3fc;
     }
 
-    @keyframes ypgOrbitAnimation {
-      0% {
-        transform: rotate(0deg) translateX(46px) rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg) translateX(46px) rotate(-360deg);
-      }
+    .ypg-node-blue-sm {
+      bottom: calc(50% - 5px);
+      left: -6px;
+      width: 11px;
+      height: 11px;
+      background: #2563eb;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.8), 0 0 3px #93c5fd;
     }
 
-    .ypg-splash-footer {
-      position: absolute;
-      bottom: 24px;
+    /* Central 3D Moon Logo */
+    .ypg-center-logo-wrap {
+      position: relative;
+      z-index: 10;
+      width: 86px;
+      height: 86px;
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 700;
+      justify-content: center;
+    }
+
+    .ypg-splash-moon-logo {
+      width: 86px;
+      height: 86px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 22px rgba(37, 99, 235, 0.28));
+      animation: ypgMoonFloat 2.6s ease-in-out infinite;
+    }
+
+    @keyframes ypgOrbitSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes ypgOrbitSpinRev {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    @keyframes ypgMoonFloat {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.045);
+      }
+    }
+
+    /* Footer Badge */
+    .ypg-splash-footer {
+      position: absolute;
+      bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .ypg-splash-lock-svg {
+      width: 15px;
+      height: 15px;
       color: #64748b;
+      stroke-width: 2.2;
+    }
+
+    .ypg-splash-secured-text {
+      color: #64748b;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: -0.1px;
+    }
+
+    .ypg-splash-secured-brand {
+      color: #1d4ed8;
+      font-size: 14.5px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
     }
 
     /* --- 2. AUTHENTIC YOUPI PG HEADER --- */
