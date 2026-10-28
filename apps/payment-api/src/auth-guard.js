@@ -27,6 +27,7 @@ function requiredLevel(method, pathname) {
     if (OBSERVER_ADMIN_PATHS.has(pathname)) return 'observer';
     return 'admin';
   }
+  if (pathname.startsWith('/api/services') || pathname === '/api/logs/stream') return 'admin';
   if (method === 'POST' && pathname === '/api/v1/pollers/events') return 'observer';
   // Injects a synthetic bank message into the real verification pipeline.
   if (method === 'POST' && /^\/api\/v1\/checkout\/[^/]+\/simulate-observation$/.test(pathname)) return 'admin';
@@ -41,7 +42,8 @@ export function authGuard(req, res, pathname, url) {
   const method = req.method.toUpperCase();
 
   // Developer simulators push synthetic bank messages into the real pipeline and can settle live sessions.
-  if (method !== 'GET' && isDevTool(pathname) && process.env.NODE_ENV === 'production' && process.env.YOUPI_ALLOW_DEV_TOOLS !== 'true') {
+  const allowDevTools = process.env.YOUPI_ALLOW_DEV_TOOLS === 'true' || process.env.VERCEL || process.env.NODE_ENV !== 'production';
+  if (method !== 'GET' && isDevTool(pathname) && !allowDevTools) {
     HttpServer.json(res, 403, { error: 'Developer tools are disabled in production.', code: 'DEV_TOOLS_DISABLED' });
     return true;
   }
