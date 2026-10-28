@@ -4,18 +4,16 @@
         <!-- Merchant Brand Header -->
         <div class="ypg-pc-brand-header">
           <div class="ypg-pc-avatar" id="pcMerchantAvatarBox">
-            <span id="pcMerchantAvatarLetter">M</span>
+            <span id="pcMerchantAvatarLetter">P</span>
             <img id="pcMerchantAvatarImg" alt="Logo" style="display:none;" />
           </div>
           <div class="ypg-pc-brand-info">
             <div class="ypg-pc-merchant-name" id="pcMerchantName">{{MERCHANT_NAME}}</div>
             <div class="ypg-pc-trust-badge" id="pcTrustBadge">
-              <svg class="ypg-pc-green-shield" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2L3 6v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6l-9-4z" fill="#10b981" />
-                <path d="M8.5 12l2.5 2.5 5-5" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"
-                  stroke-linejoin="round" />
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#22c55e">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
               </svg>
-              <span id="pcTrustBadgeText">Razorpay Trusted Business</span>
+              <span id="pcTrustBadgeText">Trusted Business</span>
             </div>
           </div>
         </div>
@@ -30,49 +28,58 @@
           <span id="pcSocialProofText">500+ orders last month from {{MERCHANT_NAME}}</span>
         </div>
 
-        <!-- Price Summary Card (STRICTLY NO UPI ID VISIBLE) -->
+        <!-- Price Summary & Order Details White Card -->
         <div class="ypg-pc-price-card">
-          <div class="ypg-pc-price-label">Price Summary</div>
+          <div class="ypg-pc-price-label">Amount to Pay</div>
           <div class="ypg-pc-price-val" id="pcPriceSummaryAmount">₹{{AMOUNT}}</div>
+
+          <div class="ypg-pc-order-details-toggle" onclick="togglePcOrderDetails()">
+            <span>Order Details</span>
+            <svg id="pcOrderChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="ypg-pc-order-details-box" id="pcOrderDetailsBox">
+            <div class="ypg-pc-order-item-row">
+              <span style="display:flex; align-items:center; gap:6px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> <span id="pcOrderDescription">Test Payment</span></span>
+              <span id="pcOrderItemPrice">₹{{AMOUNT}}</span>
+            </div>
+            <div class="ypg-pc-order-total-row">
+              <span>Total Amount</span>
+              <span id="pcOrderTotalAmount">₹{{AMOUNT}}</span>
+            </div>
+          </div>
         </div>
 
-        <!-- User Identity Row -->
-        <div class="ypg-pc-row-btn" id="pcCustomerProfileRow" onclick="toggleAccountMenu(event)">
-          <div class="ypg-pc-row-left">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
+        <!-- Secure & Encrypted Payments Box -->
+        <div class="ypg-pc-secure-box">
+          <div class="ypg-pc-secure-icon-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
-            <span id="pcCustomerProfileText">Using as Guest User</span>
           </div>
-          <span class="ypg-pc-chevron">&rsaquo;</span>
+          <div>
+            <div class="ypg-pc-secure-title">Secure &amp; Encrypted Payments</div>
+            <div class="ypg-pc-secure-subtitle">Powered by <strong id="pcAppNameBrand">Razorpay</strong></div>
+          </div>
         </div>
       </div>
 
       <!-- Bottom Isometric Graphic & Razorpay Security Trust Badge -->
       <div style="margin-top:auto;">
         <div class="ypg-pc-bags-wrap">
-          <svg viewBox="0 0 260 160" width="220" height="135" fill="none">
+          <svg viewBox="0 0 260 160" width="220" height="130" fill="none">
             <ellipse cx="130" cy="145" rx="100" ry="12" fill="rgba(0,0,0,0.18)" />
             <!-- White / Cyan shopping bag with blue handles -->
             <path d="M100 65 L135 60 L145 135 L90 140 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" />
             <path d="M100 65 L135 60 L140 85 L95 90 Z" fill="#f1f5f9" />
             <path d="M110 63 C110 48, 125 48, 125 61" stroke="#0c6cf2" stroke-width="3" fill="none"
               stroke-linecap="round" />
-            <!-- Green shopping bag with % badge -->
-            <path d="M140 75 L180 70 L195 135 L135 140 Z" fill="#10b981" stroke="#059669" stroke-width="1.5" />
-            <path d="M150 73 C150 58, 168 58, 168 71" stroke="#047857" stroke-width="3" fill="none"
-              stroke-linecap="round" />
-            <circle cx="160" cy="98" r="14" fill="#34d399" />
-            <text x="160" y="103" font-size="12" font-weight="900" fill="#064e3b" text-anchor="middle">%</text>
-            <!-- Razorpay Blue gift box with white ribbon -->
-            <path d="M55 100 L95 95 L105 140 L50 142 Z" fill="#0c6cf2" />
-            <path d="M50 100 L95 95 L95 105 L48 108 Z" fill="#3395ff" />
-            <rect x="71" y="96" width="7" height="45" fill="#ffffff" />
+            <!-- Green checkmark circle on bags -->
+            <circle cx="170" cy="115" r="16" fill="#22c55e" />
+            <path d="M163 115 l5 5 9-9" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
           </svg>
         </div>
-        <div style="margin-top:10px; display:flex; align-items:center; justify-content:center; gap:6px; font-size:11px; color:rgba(255,255,255,0.75); text-align:center;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="ypg-pc-bottom-secured">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
           </svg>

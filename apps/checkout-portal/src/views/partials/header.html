@@ -2,11 +2,20 @@
     <div class="ypg-pc-workspace">
       <!-- PC TOPBAR -->
       <div class="ypg-pc-topbar">
-        <div class="ypg-pc-topbar-title">Payment Options</div>
+        <div class="ypg-pc-topbar-header-col">
+          <div class="ypg-pc-topbar-title">Payment Options</div>
+          <div class="ypg-pc-topbar-subtitle">Choose a payment method to complete your order</div>
+        </div>
         <div class="ypg-pc-topbar-actions" style="position: relative;">
-          <button type="button" class="ypg-pc-btn-more" id="btnPcMore" onclick="toggleAccountMenu(event)" title="Options">•••</button>
+          <div class="ypg-pc-timer-badge" id="pcTopTimerBadge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <span id="pcTopTimerText">02:58</span>
+          </div>
           <button type="button" class="ypg-pc-btn-close" onclick="openCancelPaymentModal()"
-            title="Close Checkout" style="display:inline-flex; align-items:center; justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            title="Close Checkout" style="display:inline-flex; align-items:center; justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
 
           <!-- PC Account Popover Menu -->
           <div class="ypg-account-popover" id="accountMenuPopoverPc" hidden style="position: absolute; top: 40px; right: 0; background: #ffffff; color: var(--ypg-text-dark); border-radius: 12px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18); border: 1px solid var(--ypg-border); padding: 8px; z-index: 1000; min-width: 220px;">

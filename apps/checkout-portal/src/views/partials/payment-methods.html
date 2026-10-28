@@ -28,70 +28,89 @@
           <div class="ypg-pc-columns">
             <!-- PC LEFT METHODS SUB-COLUMN -->
             <div class="ypg-pc-methods-list" id="pcMethodsList">
+              <div class="ypg-pc-methods-label">Recommended</div>
+
               <!-- UPI Card -->
               <div class="ypg-pc-method-card is-active" id="pcMethodCardUpi" onclick="selectPaymentMethod('UPI')">
-                <div class="ypg-pc-method-header">
-                  <img src="/icons/upi.svg" alt="UPI" style="height:15px; margin-right:6px; vertical-align:middle;" />
-                  <div class="ypg-pc-method-title">UPI QR</div>
+                <div class="ypg-pc-method-left">
+                  <div class="ypg-pc-method-icon-box" style="background:#ffffff; border:1px solid #e2e8f0;">
+                    <img src="/icons/upi.svg" alt="UPI" style="width:22px; height:22px; object-fit:contain;" />
+                  </div>
+                  <div class="ypg-pc-method-text-box">
+                    <div class="ypg-pc-method-title">UPI</div>
+                    <div class="ypg-pc-method-sub">Pay using any UPI app</div>
+                    <div class="ypg-pc-method-icons">
+                      <img class="ypg-pc-mini-icon" src="/icons/phonepe.png" alt="PhonePe" />
+                      <img class="ypg-pc-mini-icon" src="/icons/gpay.png" alt="GPay" />
+                      <img class="ypg-pc-mini-icon" src="/icons/paytm.png" alt="Paytm" />
+                      <img class="ypg-pc-mini-icon" src="/icons/amazonpay.png" alt="Amazon Pay" />
+                      <img class="ypg-pc-mini-icon" src="/icons/cred.png" alt="CRED" />
+                    </div>
+                  </div>
                 </div>
-                <div class="ypg-pc-method-sub">Scan &amp; Pay via UPI Apps</div>
-                <div class="ypg-pc-method-icons">
-                  <img class="ypg-pc-mini-icon" src="/icons/gpay.png"
-                    onerror="if(window.FALLBACK_ICONS)this.src=window.FALLBACK_ICONS.gpay" alt="GPay" />
-                  <img class="ypg-pc-mini-icon" src="/icons/phonepe.png"
-                    onerror="if(window.FALLBACK_ICONS)this.src=window.FALLBACK_ICONS.phonepe" alt="PhonePe" />
-                  <img class="ypg-pc-mini-icon" src="/icons/paytm.png"
-                    onerror="if(window.FALLBACK_ICONS)this.src=window.FALLBACK_ICONS.paytm" alt="Paytm" />
-                  <img class="ypg-pc-mini-icon" src="/icons/cred.png"
-                    onerror="if(window.FALLBACK_ICONS)this.src=window.FALLBACK_ICONS.cred" alt="CRED" />
+                <div class="ypg-pc-radio checked" id="radioUpi"><div class="ypg-pc-radio-inner"></div></div>
+              </div>
+
+              <!-- Card (Online / Counter) -->
+              <div class="ypg-pc-method-card" id="pcMethodCardCard" onclick="selectPaymentMethod('CARD_COUNTER')">
+                <div class="ypg-pc-method-left">
+                  <div class="ypg-pc-method-icon-box" style="background:#fee2e2;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#ef4444" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                  </div>
+                  <div class="ypg-pc-method-text-box">
+                    <div class="ypg-pc-method-title">Card</div>
+                    <div class="ypg-pc-method-sub">Credit / Debit / ATM Cards</div>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="ypg-pc-chevron-right">&rsaquo;</span>
+                  <div class="ypg-pc-radio" id="radioCard"><div class="ypg-pc-radio-inner"></div></div>
                 </div>
               </div>
 
-              <!-- Cash at Till Card (Offline Mode) -->
-              <div class="ypg-pc-method-card" id="pcMethodCardCash" onclick="selectPaymentMethod('CASH_COUNTER')" style="{{PC_CASH_STYLE}}">
-                <div class="ypg-pc-method-header">
-                  <img src="/icons/cash.svg" alt="Cash" style="width:16px; height:16px; margin-right:6px; vertical-align:middle;" />
-                  <div class="ypg-pc-method-title">Cash at Till</div>
-                  <span class="ypg-pc-cash-pill">Counter</span>
+              <!-- Net Banking -->
+              <div class="ypg-pc-method-card" id="pcMethodCardNetbanking" onclick="showOptionToast('Net Banking: select your bank at payment')">
+                <div class="ypg-pc-method-left">
+                  <div class="ypg-pc-method-icon-box" style="background:#eff6ff;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2563eb" stroke-width="2"><line x1="3" y1="21" x2="21" y2="21"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="5 6 12 3 19 6"/><line x1="4" y1="10" x2="4" y2="21"/><line x1="20" y1="10" x2="20" y2="21"/><line x1="8" y1="14" x2="8" y2="17"/><line x1="12" y1="14" x2="12" y2="17"/><line x1="16" y1="14" x2="16" y2="17"/></svg>
+                  </div>
+                  <div class="ypg-pc-method-text-box">
+                    <div class="ypg-pc-method-title">Net Banking</div>
+                    <div class="ypg-pc-method-sub">All major banks</div>
+                  </div>
                 </div>
-                <div class="ypg-pc-method-sub">Pay cash directly to cashier</div>
-                <div class="ypg-pc-method-icons" style="margin-top:6px;">
-                  <span style="font-size:10.5px; font-weight:700; color:#15803d; background:#dcfce7; padding:2px 8px; border-radius:5px; display:inline-flex; align-items:center; gap:4px; border:1px solid #bbf7d0;">
-                    <img src="/icons/cash.svg" alt="Cash" style="width:12px; height:12px;" />
-                    Physical Cash
-                  </span>
-                </div>
+                <div class="ypg-pc-radio" id="radioNetbanking"><div class="ypg-pc-radio-inner"></div></div>
               </div>
 
-              <!-- Card at Counter (Offline Mode) -->
-              <div class="ypg-pc-method-card" id="pcMethodCardCard" onclick="selectPaymentMethod('CARD_COUNTER')" style="{{PC_CARD_STYLE}}">
-                <div class="ypg-pc-method-header">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px; vertical-align:middle; color:#475569;"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                  <div class="ypg-pc-method-title">Card at Counter</div>
-                  <span class="ypg-pc-cash-pill" style="background:#f1f5f9; color:#475569;">POS</span>
+              <!-- Wallet -->
+              <div class="ypg-pc-method-card" id="pcMethodCardWallet" onclick="showOptionToast('Wallet: Paytm, Amazon Pay & more available')">
+                <div class="ypg-pc-method-left">
+                  <div class="ypg-pc-method-icon-box" style="background:#f5f3ff;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#9333ea" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                  </div>
+                  <div class="ypg-pc-method-text-box">
+                    <div class="ypg-pc-method-title">Wallet</div>
+                    <div class="ypg-pc-method-sub">Paytm, Amazon Pay &amp; more</div>
+                  </div>
                 </div>
-                <div class="ypg-pc-method-sub">Swipe or tap card at POS desk</div>
-                <div class="ypg-pc-method-icons" style="gap:5px; margin-top:6px; display:flex; align-items:center;">
-                  <img src="/icons/visa.svg" alt="Visa" style="height:15px; width:auto; object-fit:contain;" />
-                  <img src="/icons/mastercard.svg" alt="Mastercard" style="height:15px; width:auto; object-fit:contain;" />
-                  <img src="/icons/rupay.svg" alt="RuPay" style="height:15px; width:auto; object-fit:contain;" />
-                </div>
+                <div class="ypg-pc-radio" id="radioWallet"><div class="ypg-pc-radio-inner"></div></div>
               </div>
 
-              <!-- Cash on Delivery (COD) Card (Online Mode) -->
-              <div class="ypg-pc-method-card" id="pcMethodCardCod" onclick="selectPaymentMethod('COD')" style="{{PC_COD_STYLE}}">
-                <div class="ypg-pc-method-header">
-                  <img src="/icons/cash.svg" alt="COD" style="width:16px; height:16px; margin-right:6px; vertical-align:middle;" />
-                  <div class="ypg-pc-method-title">Cash on Delivery</div>
-                  <span class="ypg-pc-cash-pill" style="background:#fef3c7; color:#92400e;">COD</span>
+              <!-- Cash on Delivery (COD) Card -->
+              <div class="ypg-pc-method-card" id="pcMethodCardCod" onclick="selectPaymentMethod('COD')">
+                <div class="ypg-pc-method-left">
+                  <div class="ypg-pc-method-icon-box" style="background:#f0fdf4;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#16a34a" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>
+                  </div>
+                  <div class="ypg-pc-method-text-box">
+                    <div class="ypg-pc-method-title" style="display:flex; align-items:center; gap:6px;">
+                      Cash on Delivery
+                      <span class="ypg-pc-cod-pill">COD</span>
+                    </div>
+                    <div class="ypg-pc-method-sub">Pay cash at your doorstep</div>
+                  </div>
                 </div>
-                <div class="ypg-pc-method-sub">Pay physical cash at doorstep</div>
-                <div class="ypg-pc-method-icons" style="margin-top:6px;">
-                  <span style="font-size:10.5px; font-weight:700; color:#b45309; background:#fef3c7; padding:2px 8px; border-radius:5px; display:inline-flex; align-items:center; gap:4px; border:1px solid #fde68a;">
-                    <img src="/icons/cash.svg" alt="COD" style="width:12px; height:12px;" />
-                    Doorstep Cash
-                  </span>
-                </div>
+                <div class="ypg-pc-radio" id="radioCod"><div class="ypg-pc-radio-inner"></div></div>
               </div>
             </div>
 
@@ -99,25 +118,13 @@
             <div class="ypg-pc-active-view">
               <!-- VIEW A: PURE UPI QR INTERFACE -->
               <div id="viewUpiContent">
-                <h2 class="ypg-page-title">UPI QR Payment</h2>
-
-                <!-- Section Label & Countdown Timer -->
+                <!-- Section Label & Status Badge -->
                 <div class="ypg-section-label-row">
-                  <span class="ypg-section-heading">Scan &amp; Pay via UPI</span>
-                  <div class="ypg-countdown-pill" id="activeTimerBadge">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="2.2">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    <span id="activeTimerText">05:00</span>
+                  <span class="ypg-pc-active-heading">Scan &amp; Pay via UPI</span>
+                  <div class="ypg-server-health-indicator" id="upiServerHealthIndicator">
+                    <span class="ypg-pulse-dot" id="serverPulseDot"></span>
+                    <span id="serverStatusLabel">UPI Server Busy</span>
                   </div>
-                </div>
-
-                <!-- UPI Server Health Indicator & Downtime Warning -->
-                <div class="ypg-server-health-indicator {{SERVER_HEALTH_CLASS}}" id="upiServerHealthIndicator">
-                  <span class="ypg-pulse-dot" id="serverPulseDot"></span>
-                  <span id="serverStatusLabel">{{SERVER_HEALTH_LABEL}}</span>
                 </div>
 
                 <div class="{{DOWNTIME_ALERT_CLASS}}" id="serverDowntimeAlert" style="display:{{DOWNTIME_ALERT_STYLE}};">
@@ -145,44 +152,50 @@
 
                   <!-- Right: Prompt, UPI App Logos -->
                   <div class="ypg-qr-details-col">
-                    <div class="ypg-qr-prompt-title">Scan the QR using any UPI App</div>
-
-                    <!-- Brand Logos Row (Zero Fake Offers) -->
-                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:3px 0 6px 0;">
-                      <div class="ypg-upi-logos-row">
-                        <div class="ypg-app-icon" title="Google Pay"><img src="/icons/gpay.png"
-                            onerror="if(window.FALLBACK_ICONS)this.src=window.FALLBACK_ICONS.gpay" alt="GPay" /></div>
-                        <div class="ypg-app-icon" title="PhonePe"><img src="/icons/phonepe.png"
-                            onerror="if(window.FALLBACK_ICONS)this.src=window.FALLBACK_ICONS.phonepe" alt="PhonePe" />
-                        </div>
-                        <div class="ypg-app-icon" title="Paytm"><img src="/icons/paytm.png"
-                            onerror="if(window.FALLBACK_ICONS)this.src=window.FALLBACK_ICONS.paytm" alt="Paytm" /></div>
-                        <div class="ypg-app-icon" title="CRED"><img src="/icons/cred.png"
-                            onerror="if(window.FALLBACK_ICONS)this.src=window.FALLBACK_ICONS.cred" alt="CRED" /></div>
-                        <div class="ypg-app-icon" title="BHIM UPI"><img src="/icons/bhim.png"
-                            onerror="if(window.FALLBACK_ICONS)this.src=window.FALLBACK_ICONS.bhim" alt="BHIM" /></div>
-                        <div class="ypg-app-icon" title="Amazon Pay"><img src="/icons/amazonpay.png"
-                            onerror="if(window.FALLBACK_ICONS)this.src=window.FALLBACK_ICONS.amazonpay"
-                            alt="Amazon Pay" /></div>
-                      </div>
+                    <div class="ypg-qr-prompt-title">Scan QR with any UPI App</div>
+                    <div class="ypg-qr-prompt-sub">
+                      Open your UPI app and scan the QR code to pay
                     </div>
 
-                    <div style="font-size:12px; color:#64748b; line-height:1.4;">
-                      Open any UPI app on your phone to scan and pay directly.
+                    <!-- Brand Logos Grid -->
+                    <div class="ypg-upi-logos-grid">
+                      <div class="ypg-app-icon" title="PhonePe"><img src="/icons/phonepe.png" alt="PhonePe" /></div>
+                      <div class="ypg-app-icon" title="Google Pay"><img src="/icons/gpay.png" alt="GPay" /></div>
+                      <div class="ypg-app-icon" title="Paytm"><img src="/icons/paytm.png" alt="Paytm" /></div>
+                      <div class="ypg-app-icon" title="Amazon Pay"><img src="/icons/amazonpay.png" alt="Amazon Pay" /></div>
+                      <div class="ypg-app-icon" title="CRED"><img src="/icons/cred.png" alt="CRED" /></div>
+                      <div class="ypg-app-icon" title="BHIM UPI"><img src="/icons/bhim.png" alt="BHIM" /></div>
                     </div>
                   </div>
                 </div>
-                <!-- UPI Intent & Fast Checkout Banner -->
-                <div class="ypg-upi-id-section" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px 14px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#2563eb" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+
+                <!-- Amber Alert Box: UPI Server Busy (Matching Screenshot) -->
+                <div class="ypg-pc-busy-alert">
+                  <div class="ypg-pc-busy-alert-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  </div>
+                  <div class="ypg-pc-busy-alert-body">
+                    <div class="ypg-pc-busy-alert-title">UPI Server Busy</div>
+                    <div class="ypg-pc-busy-alert-desc">Your payment may go through extra processing seconds. Please do not close the page.</div>
+                  </div>
+                </div>
+
+                <!-- Auto-Verify Strip (Matching Screenshot) -->
+                <div class="ypg-pc-autoverify-strip">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <div class="ypg-pc-bolt-icon-box">
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#2563eb" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </div>
                     <div>
-                      <div style="font-size:12.5px; font-weight:700; color:#0c2340;">Razorpay Standard UPI Auto-Verify</div>
-                      <div style="font-size:11px; color:#64748b;">Scan with any app — instantaneous credit verification</div>
+                      <div class="ypg-pc-autoverify-title">Razorpay Standard UPI Auto-Verify</div>
+                      <div class="ypg-pc-autoverify-desc">Your payment will be verified automatically and you'll be redirected instantly.</div>
                     </div>
                   </div>
-                  <span style="font-size:11px; font-weight:700; color:#0c6cf2; background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:3px 8px;">Fastest</span>
+                  <span class="ypg-pc-fastest-pill">Fastest</span>
                 </div>
+
+                <!-- Hidden mobile fallback timer badge -->
+                <div style="display:none;" id="activeTimerBadge"><span id="activeTimerText">05:00</span></div>
 
                 <!-- UPI Payment Instructions Guide -->
                 <div class="ypg-instructions-card">

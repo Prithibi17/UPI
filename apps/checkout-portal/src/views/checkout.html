@@ -173,6 +173,16 @@
       }
     }
 
+    // Toggle PC Order Details in Left Sidebar
+    function togglePcOrderDetails() {
+      const box = document.getElementById('pcOrderDetailsBox');
+      const chevron = document.getElementById('pcOrderChevron');
+      if (!box) return;
+      const isHidden = box.style.display === 'none';
+      box.style.display = isHidden ? 'block' : 'none';
+      if (chevron) chevron.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
     // Failure redirect URL resolver
     function getFailedRedirectUrl() {
       const orderId = state?.orderId || '';
@@ -1192,6 +1202,21 @@
           el.classList.remove('is-active');
         }
       });
+
+      const radios = [
+        { id: 'radioUpi', method: 'UPI' },
+        { id: 'radioCard', method: 'CARD_COUNTER' },
+        { id: 'radioCod', method: 'COD' }
+      ];
+      radios.forEach(r => {
+        const el = document.getElementById(r.id);
+        if (!el) return;
+        if (r.method === method) {
+          el.classList.add('checked');
+        } else {
+          el.classList.remove('checked');
+        }
+      });
     }
 
     function switchMethodFromDowntime() {
@@ -1258,6 +1283,8 @@
               runCountdown(resData.timeRemainingSeconds || 300, sec => {
                 const el = document.getElementById('activeTimerText');
                 if (el) el.textContent = formatTime(sec);
+                const elTop = document.getElementById('pcTopTimerText');
+                if (elTop) elTop.textContent = formatTime(sec);
               }, () => {
                 const el = document.getElementById('activeTimerText');
                 if (el) el.textContent = 'Expired';
@@ -1670,9 +1697,15 @@
 
       // Update PC Sidebar Details & Whitelabeling
       const pcMerchant = document.getElementById('pcMerchantName');
-      if (pcMerchant) pcMerchant.textContent = data.merchantName || 'Merchant Name';
+      if (pcMerchant) pcMerchant.textContent = data.merchantName || 'Prithibi';
       const pcPrice = document.getElementById('pcPriceSummaryAmount');
       if (pcPrice && data.amount) pcPrice.textContent = `₹${data.amount}`;
+      const pcOrderDesc = document.getElementById('pcOrderDescription');
+      if (pcOrderDesc) pcOrderDesc.textContent = data.orderDescription || data.description || 'Test Payment';
+      const pcOrderItemPrice = document.getElementById('pcOrderItemPrice');
+      if (pcOrderItemPrice && data.amount) pcOrderItemPrice.textContent = `₹${data.amount}`;
+      const pcOrderTotal = document.getElementById('pcOrderTotalAmount');
+      if (pcOrderTotal && data.amount) pcOrderTotal.textContent = `₹${data.amount}`;
       const pcAppBrand = document.getElementById('pcAppNameBrand');
       if (pcAppBrand) pcAppBrand.textContent = appName;
 
@@ -1702,7 +1735,7 @@
         } else {
           pcTrust.style.display = 'inline-flex';
           if (pcTrustText) {
-            pcTrustText.textContent = b.trustBadgeText || `${appName} Trusted Business`;
+            pcTrustText.textContent = b.trustBadgeText || `Trusted Business`;
           }
         }
       }
@@ -2188,6 +2221,8 @@
           runCountdown(remainingSec, sec => {
             const tText = document.getElementById('activeTimerText');
             if (tText) tText.textContent = formatTime(sec);
+            const tTop = document.getElementById('pcTopTimerText');
+            if (tTop) tTop.textContent = formatTime(sec);
 
             // "Payment Done — Check My Payment" button appears after 4:00
             if (sec <= 240 && btnContinue) {
