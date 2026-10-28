@@ -10035,7 +10035,7 @@
           if (heroDot) heroDot.style.background = '#10b981';
           if (heroTitle) heroTitle.textContent = 'Google Account Connected & Active';
           if (heroDesc) {
-            heroDesc.innerHTML = `<svg class="i" aria-hidden="true"><use href="#i-check-circle"/></svg> Authenticated as` <strong style="color:#38bdf8; font-family:monospace;">${escapeHtml(connectedEmail || 'Authorized Account')}</strong>. Zero-delay mailbox polling active for incoming UPI payment notifications.`;
+            heroDesc.innerHTML = `<svg class="i" aria-hidden="true"><use href="#i-check-circle"/></svg> Authenticated as <strong style="color:#38bdf8; font-family:monospace;">${escapeHtml(connectedEmail || 'Authorized Account')}</strong>. Zero-delay mailbox polling active for incoming UPI payment notifications.`;
           }
           if (authBtnLabel) authBtnLabel.innerHTML = '<svg class="i" aria-hidden="true"><use href="#i-arrow-path"/></svg> Re-authorize Account';
           if (disconnectBtn) disconnectBtn.style.display = 'inline-flex';
@@ -10136,7 +10136,7 @@
             box.style.background = 'rgba(239, 68, 68, 0.1)';
             box.style.border = '1px solid #dc2626';
             box.style.color = '#f87171';
-            box.innerHTML = `<svg class="i" aria-hidden="true"><use href="#i-exclamation-triangle"/></svg> <strong>Connection Test Notice:</strong>` ${escapeHtml(data.error || 'Token expired or invalid. Please click Connect with Google to re-authorize.')}`;
+            box.innerHTML = `<svg class="i" aria-hidden="true"><use href="#i-exclamation-triangle"/></svg> <strong>Connection Test Notice:</strong> ${escapeHtml(data.error || 'Token expired or invalid. Please click Connect with Google to re-authorize.')}`;
           }
         }
       } catch (e) {
