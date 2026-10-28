@@ -969,6 +969,43 @@
       activeToken = null;
       hasAttemptedAutoLogin = false;
       updateCustomerDisplay(null);
+      setGatewayAuthMode(false);
+      showOptionToast('Switched to Guest Mode');
+    }
+
+    async function activateGuestSession() {
+      if (window.isActivatingGuestSession || !PAYMENT_ID) return;
+      window.isActivatingGuestSession = true;
+      try {
+        const res = await fetch(`${API_BASE}/api/v1/checkout/${PAYMENT_ID}/activate-guest`, {
+          method: 'POST',
+          headers: getApiHeaders({ 'Content-Type': 'application/json' })
+        });
+        if (res.ok) {
+          const actData = await res.json().catch(() => null);
+          if (actData && actData.status && actData.status !== 'INITIATED') {
+            loadState();
+          }
+        }
+      } catch (e) {
+        console.warn('activateGuestSession error:', e);
+      } finally {
+        window.isActivatingGuestSession = false;
+      }
+    }
+
+    function continueAsGuest() {
+      clearPreservedIdentity();
+      activeCustomer = null;
+      activeToken = null;
+      updateCustomerDisplay(null);
+      setGatewayAuthMode(false);
+      activateGuestSession();
+      loadQrSvg();
+      showOptionToast('Continuing as Guest — Zero phone number required');
+    }
+
+    function promptSignInModal() {
       setGatewayAuthMode(true);
       goToAuthStep('mobile');
       renderSavedAccountsUI();
@@ -2024,9 +2061,8 @@
               clearPreservedIdentity();
               activeCustomer = null;
               activeToken = null;
-              setGatewayAuthMode(true);
-              goToAuthStep('mobile');
-              renderSavedAccountsUI();
+              updateCustomerDisplay(null);
+              setGatewayAuthMode(false);
             }
           } catch (e) {
           } finally {
@@ -2035,7 +2071,9 @@
         };
       }
 
-      // 3. Pre-Gateway Customer Authentication Gate (Preserves identity up to 1 week)
+      // 3. Frictionless Direct Checkout: ZERO Hindrance for Mobile Number!
+      // If customer has an active or preserved account, use it.
+      // Otherwise, proceed directly as Guest without ever blocking for a mobile number.
       if (data.customer) {
         activeCustomer = data.customer;
       } else if (!activeCustomer) {
@@ -2045,25 +2083,17 @@
           activeToken = preserved.token || activeToken;
         }
       }
-      const hasCustomer = Boolean(data.customer || activeCustomer);
 
-      if (!hasCustomer) {
-        setGatewayAuthMode(true);
-        const stepMob = document.getElementById('authStepMobile');
-        const isAlreadyOnMobile = stepMob && !stepMob.hidden;
-        if (!currentAuthStep || (currentAuthStep === 'mobile' && !isAlreadyOnMobile)) {
-          goToAuthStep('mobile');
-        }
-        renderSavedAccountsUI();
-        return;
-      }
-
-      // Authenticated Customer
       if (activeCustomer) {
         updateCustomerDisplay(activeCustomer);
         // Automatically bind customer to the payment session if session is INITIATED or unbound
         if (activeToken && PAYMENT_ID && (!data.customer || data.status === 'INITIATED')) {
           window.autoBindCustomerToSession(activeCustomer.id, activeToken);
+        }
+      } else {
+        updateCustomerDisplay(null);
+        if (PAYMENT_ID && data.status === 'INITIATED') {
+          activateGuestSession();
         }
       }
       setGatewayAuthMode(false);

@@ -13,12 +13,15 @@
             <div class="popoverCustomerName" id="popoverCustomerNamePc"
               style="padding:6px 10px 8px 10px; font-weight:700; font-size:12px; border-bottom:1px solid #f1f5f9; color:#0f172a; word-break:break-word;">
               Guest User</div>
+            <button type="button" class="ypg-popover-item" onclick="promptSignInModal()" style="color:#0c6cf2;">
+              <span>📱</span> Sign In (Optional)
+            </button>
             <button type="button" class="ypg-popover-item" onclick="openHelpModal()">
               <span>❓</span> Help & Support
             </button>
             <button type="button" class="ypg-popover-item" onclick="handleCustomerLogout()"
               style="color:var(--ypg-danger);">
-              <span>🚪</span> Sign Out / Change Number
+              <span>🚪</span> Sign Out / Reset Guest
             </button>
           </div>
         </div>
@@ -87,12 +90,15 @@
           <div id="popoverCustomerName"
             style="padding:4px 8px 8px 8px; font-weight:700; font-size:12px; border-bottom:1px solid #f1f5f9; color:#0f172a;">
             Guest User</div>
+          <button type="button" class="ypg-popover-item" onclick="promptSignInModal()" style="color:#0c6cf2;">
+            <span>📱</span> Sign In (Optional)
+          </button>
           <button type="button" class="ypg-popover-item" onclick="openHelpModal()">
             <span>❓</span> Help & Support
           </button>
           <button type="button" class="ypg-popover-item" onclick="handleCustomerLogout()"
             style="color:var(--ypg-danger);">
-            <span>🚪</span> Sign Out / Change Number
+            <span>🚪</span> Sign Out / Reset Guest
           </button>
         </div>
       </header>

@@ -486,6 +486,8 @@ export function registerCheckoutRoutes(server, ctx) {
       : (receivingAccount ? Boolean(receivingAccount.isMerchantEnabled) : true);
     const upiMode = isMerchantEnabled ? 'MERCHANT' : 'NON_MERCHANT';
 
+    const isCounterSession = session.method === 'CASH_COUNTER' || session.method === 'CARD_COUNTER';
+
     let timeRemainingSeconds = 0;
     if (session.status === PaymentStatus.ACTIVE && session.expiresAt) {
       timeRemainingSeconds = Math.max(0, Math.ceil((session.expiresAt.getTime() - now) / 1000));
@@ -514,7 +516,6 @@ export function registerCheckoutRoutes(server, ctx) {
     }
 
     const merchantBranding = merchant?.branding || {};
-    const isCounterSession = session.method === 'CASH_COUNTER' || session.method === 'CARD_COUNTER';
     const sellingMode = merchantBranding.sellingMode || (isCounterSession ? 'OFFLINE' : 'ONLINE');
     const supportEmails = merchantBranding.supportEmails || (merchant?.contactEmail ? [merchant.contactEmail] : []);
     const supportMobiles = merchantBranding.supportMobiles || (merchant?.contactPhone ? [merchant.contactPhone] : []);
@@ -884,6 +885,46 @@ export function registerCheckoutRoutes(server, ctx) {
         fullName: customer.name,
         phoneNumber: customer.mobileNumber
       }
+    });
+  });
+
+  // POST /api/v1/checkout/:id/activate-guest - Zero-hindrance activation without requiring phone number or login
+  server.post('/api/v1/checkout/:id/activate-guest', async (req, res, params) => {
+    const session = ctx.sessionRepo.findById(params.id);
+    if (!session) {
+      HttpServer.json(res, 404, { error: `Payment session not found: ${params.id}` });
+      return;
+    }
+
+    if (session.status !== PaymentStatus.INITIATED) {
+      HttpServer.json(res, 200, {
+        success: true,
+        status: session.status,
+        queuePosition: session.queuePosition || 0,
+        expiresAt: session.expiresAt
+      });
+      return;
+    }
+
+    const receivingAccountId = session.receivingAccountId || (ctx.accountRepo?.findActiveForMerchant(session.merchantId)?.id);
+    let queueResult = { status: session.status, queuePosition: 0, expiresAt: null };
+    if (receivingAccountId) {
+      queueResult = ctx.queueEngine.enqueueOrActivate(session.id, receivingAccountId);
+      if (queueResult.expiresAt) {
+        ctx.timingEngine.startActiveTimer(session.id, queueResult.expiresAt);
+      }
+      server.broadcastSse(session.id, 'status_change', {
+        status: queueResult.status,
+        queuePosition: queueResult.queuePosition,
+        expiresAt: queueResult.expiresAt
+      });
+    }
+
+    HttpServer.json(res, 200, {
+      success: true,
+      status: queueResult.status,
+      queuePosition: queueResult.queuePosition,
+      expiresAt: queueResult.expiresAt
     });
   });
 
