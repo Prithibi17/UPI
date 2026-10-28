@@ -175,10 +175,11 @@ export class CoinWalletStoreServer {
         return;
       }
 
-      // SERVE LOCAL PUBLIC ASSETS: /assets/*, /css/*, /js/*
-      if ((pathname.startsWith('/assets/') || pathname.startsWith('/css/') || pathname.startsWith('/js/')) && (method === 'GET' || method === 'HEAD')) {
+      // SERVE LOCAL PUBLIC ASSETS: /assets/*, /css/*, /js/* (and with /store prefix)
+      const assetPath = pathname.startsWith('/store/') ? pathname.replace(/^\/store/, '') : pathname;
+      if ((assetPath.startsWith('/assets/') || assetPath.startsWith('/css/') || assetPath.startsWith('/js/')) && (method === 'GET' || method === 'HEAD')) {
         const publicDir = path.resolve(__dirname, '../public');
-        const safeRelative = path.normalize(pathname.replace(/^\//, '')).replace(/^(\.\.(\/|\\|$))+/, '');
+        const safeRelative = path.normalize(assetPath.replace(/^\//, '')).replace(/^(\.\.(\/|\\|$))+/, '');
         const targetPath = path.join(publicDir, safeRelative);
         const rel = path.relative(publicDir, targetPath);
 
@@ -192,7 +193,8 @@ export class CoinWalletStoreServer {
             : 'application/octet-stream';
           res.writeHead(200, {
             'Content-Type': contentType,
-            'Cache-Control': ext === '.css' || ext === '.js' ? 'no-cache' : 'public, max-age=86400'
+            'Cache-Control': ext === '.css' || ext === '.js' ? 'no-cache' : 'public, max-age=86400',
+            'Access-Control-Allow-Origin': '*'
           });
           if (method === 'HEAD') { res.end(); return; }
           const stream = fs.createReadStream(targetPath);
@@ -209,7 +211,7 @@ export class CoinWalletStoreServer {
       }
 
       // GET /youpi.js or /sdk/youpi-checkout.js (Universal Frontend Integration Script)
-      if (pathname === '/youpi.js' || pathname === '/sdk/youpi-checkout.js' || pathname === '/sdk/youpi.js') {
+      if (assetPath === '/youpi.js' || assetPath === '/sdk/youpi-checkout.js' || assetPath === '/sdk/youpi.js') {
         const sdkPath = path.resolve(__dirname, '../../checkout-portal/src/sdk/youpi.js');
         if (fs.existsSync(sdkPath)) {
           res.writeHead(200, {
@@ -306,8 +308,28 @@ export class CoinWalletStoreServer {
       }
 
       // GET / or /store
-      if ((pathname === '/' || pathname === '/store') && (method === 'GET' || method === 'HEAD')) {
-        try { this.storeHtml = fs.readFileSync(path.join(__dirname, 'store.html'), 'utf8'); } catch {}
+      if ((pathname === '/' || pathname === '/store' || pathname === '/store/') && (method === 'GET' || method === 'HEAD')) {
+        try {
+          let html = fs.readFileSync(path.join(__dirname, 'store.html'), 'utf8');
+          const cssPath = path.join(__dirname, '../public/css/store.css');
+          if (fs.existsSync(cssPath)) {
+            const cssContent = fs.readFileSync(cssPath, 'utf8');
+            html = html.replace('<!-- MODULAR STORE STYLESHEET -->', `<style id="youpiInlinedStoreStyles">\n${cssContent}\n</style>\n<!-- MODULAR STORE STYLESHEET -->`);
+          }
+          const jsPath = path.join(__dirname, '../public/js/store.js');
+          if (fs.existsSync(jsPath)) {
+            const jsContent = fs.readFileSync(jsPath, 'utf8');
+            html = html.replace('<script src="/js/store.js"></script>', `<script id="youpiInlinedStoreJs">\n${jsContent}\n</script>\n<script src="/js/store.js"></script>`);
+          }
+          const sdkPath = path.resolve(__dirname, '../../checkout-portal/src/sdk/youpi.js');
+          if (fs.existsSync(sdkPath)) {
+            const sdkContent = fs.readFileSync(sdkPath, 'utf8');
+            html = html.replace('<script src="/youpi.js"', `<script id="youpiInlinedSdk">\n${sdkContent}\n</script>\n<script src="/youpi.js"`);
+          }
+          this.storeHtml = html;
+        } catch (e) {
+          try { this.storeHtml = fs.readFileSync(path.join(__dirname, 'store.html'), 'utf8'); } catch {}
+        }
         res.writeHead(200, {
           'Content-Type': 'text/html; charset=utf-8',
           'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',

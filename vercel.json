@@ -103,6 +103,96 @@
       }
     },
     {
+      "source": "/assets/(.*)",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/css/store.css",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/js/store.js",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/wallet",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/order-success",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/order-failed",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/order-cancelled",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/order-suspicious",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/order-expired",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/openapi.yaml",
+      "destination": {
+        "service": "coin-wallet-store"
+      }
+    },
+    {
+      "source": "/youpi.js",
+      "destination": {
+        "service": "checkout-portal"
+      }
+    },
+    {
+      "source": "/icons/(.*)",
+      "destination": {
+        "service": "checkout-portal"
+      }
+    },
+    {
+      "source": "/css/(.*)",
+      "destination": {
+        "service": "checkout-portal"
+      }
+    },
+    {
+      "source": "/js/(.*)",
+      "destination": {
+        "service": "checkout-portal"
+      }
+    },
+    {
+      "source": "/fonts/(.*)",
+      "destination": {
+        "service": "merchant-admin"
+      }
+    },
+    {
       "source": "/api/(.*)",
       "destination": {
         "service": "payment-api"
