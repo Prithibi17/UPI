@@ -117,6 +117,9 @@ export function serializeForScript(value) {
 // Placeholders that land inside a <script> block rather than HTML markup.
 const SCRIPT_PLACEHOLDERS = new Set(['PAYMENT_ID', 'API_BASE_URL', 'AMOUNT']);
 
+// Placeholders that contain raw HTML / SVG markup or raw JSON that must not be HTML-entity escaped.
+const RAW_PLACEHOLDERS = new Set(['QR_SVG_INLINE', 'INITIAL_STATE_JSON']);
+
 /**
  * Replaces {{PLACEHOLDER}} tokens in the checkout template.
  *
@@ -128,6 +131,7 @@ export function renderTemplate(template, values) {
   return template.replace(/\{\{([A-Z0-9_]+)\}\}/g, (match, key) => {
     if (!Object.prototype.hasOwnProperty.call(values, key)) return match;
     const value = values[key];
+    if (RAW_PLACEHOLDERS.has(key)) return String(value ?? '');
     return SCRIPT_PLACEHOLDERS.has(key) ? escapeJsString(value) : escapeHtml(value);
   });
 }
@@ -258,6 +262,14 @@ export class CheckoutServer {
     const downtimeAltBtnDisplay = ((sellingMode === 'ONLINE' && enabledMethods.includes('COD')) || (sellingMode === 'OFFLINE' && enabledMethods.includes('CASH_COUNTER'))) ? 'inline-block' : 'none';
     const downtimeAltBtnLabel = (sellingMode === 'ONLINE') ? 'Pay via Cash on Delivery Instead' : 'Pay by Cash at Till Instead';
 
+    let inlineQrSvg = '';
+    try {
+      const upiUri = state?.upiUri || `upi://pay?pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent(merchantName)}&am=${encodeURIComponent(state?.amount || '100.00')}&tn=${encodeURIComponent(paymentId)}`;
+      inlineQrSvg = generateQrSvg(upiUri, 220);
+    } catch {
+      inlineQrSvg = '<div style="font-size:11px; color:#94a3b8; text-align:center;">Loading QR...</div>';
+    }
+
     return renderTemplate(html, {
       PAYMENT_ID: paymentId,
       API_BASE_URL: clientApiBase,
@@ -285,6 +297,7 @@ export class CheckoutServer {
       PC_CARD_STYLE: pcCardStyle,
       DOWNTIME_ALT_BTN_DISPLAY: downtimeAltBtnDisplay,
       DOWNTIME_ALT_BTN_LABEL: downtimeAltBtnLabel,
+      QR_SVG_INLINE: inlineQrSvg,
       INITIAL_STATE_JSON: serializeForScript(state || {})
     });
   }

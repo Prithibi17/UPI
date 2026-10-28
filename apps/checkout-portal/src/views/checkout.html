@@ -135,13 +135,13 @@
       } catch (e) { }
     }
 
-    // Dismiss Initial Splash Screen smoothly after brief intro
+    // Dismiss Initial Splash Screen smoothly and quickly
     function dismissSplashScreen() {
       const splash = document.getElementById('ypgSplashScreen');
       if (splash && !splash.classList.contains('fade-out')) {
         setTimeout(() => {
           splash.classList.add('fade-out');
-        }, 700);
+        }, 40);
       }
     }
 
@@ -1347,8 +1347,8 @@
     const DeviceIdentity = {
       dbName: 'youpi_device_keystore_v1',
       storeName: 'keys',
-      currentDeviceId: null,
-      currentDeviceToken: null,
+      currentDeviceId: (function () { try { return localStorage.getItem('ypg_device_id') || null; } catch (e) { return null; } })(),
+      currentDeviceToken: (function () { try { return localStorage.getItem('ypg_device_token') || null; } catch (e) { return null; } })(),
 
       async openDb() {
         return new Promise((resolve) => {
@@ -1533,7 +1533,9 @@
 
     async function loadState() {
       try {
-        await DeviceIdentity.getOrRegister();
+        if (!DeviceIdentity.currentDeviceId) {
+          DeviceIdentity.getOrRegister().catch(() => {});
+        }
         const headers = getApiHeaders();
 
         const res = await fetch(`${API_BASE}/api/v1/checkout/${PAYMENT_ID}/state`, { headers });
@@ -2337,6 +2339,7 @@
     async function loadQrSvg() {
       const container = document.getElementById('qrImageContainer');
       if (!container) return;
+      if (container.querySelector('svg')) return;
       try {
         const res = await fetch(`/checkout/${PAYMENT_ID}/qr.svg`);
         if (res.ok) {
@@ -2352,6 +2355,7 @@
       // Automatic retry to guarantee QR code is loaded
       setTimeout(async () => {
         try {
+          if (container.querySelector('svg')) return;
           const res = await fetch(`/checkout/${PAYMENT_ID}/qr.svg`);
           if (res.ok) {
             const svg = await res.text();
@@ -2360,7 +2364,7 @@
             }
           }
         } catch (e) {}
-      }, 400);
+      }, 300);
     }
 
     function copyVpaId() {
@@ -2776,13 +2780,13 @@
       }
     }
 
-    // Continuous 2-second fallback polling: guarantees instant response when cashier confirms/declines or queues clear
+    // Continuous fallback polling: guarantees instant response when cashier confirms/declines or queues clear
     setInterval(() => {
       if (state && (state.status === 'SUCCESS' || state.status === 'FAILED' || state.status === 'EXPIRED' || state.status === 'BLOCKED' || state.isBanned)) {
         return;
       }
       loadState();
-    }, 2000);
+    }, 1200);
 
     // --- SUPPORT / HELP MODAL ---
     function openHelpModal() {
@@ -2908,6 +2912,7 @@
         const parsed = JSON.parse(initEl.textContent);
         if (parsed && (parsed.amount || parsed.branding || parsed.merchantName)) {
           renderState(parsed);
+          dismissSplashScreen();
         }
       }
     } catch (e) { }
