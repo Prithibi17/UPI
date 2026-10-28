@@ -154,9 +154,16 @@ async function startGatewayPurchase() {
       })
     });
 
-    const data = await res.json();
-    if (!res.ok || (!data.checkoutUrl && !data.paymentId)) {
-      showStoreToast(data.error || 'Failed to initiate checkout session.', false);
+    let data = null;
+    try {
+      data = await res.json();
+    } catch (e) {
+      data = null;
+    }
+
+    if (!res.ok || (!data || (!data.checkoutUrl && !data.paymentId))) {
+      const errMsg = (data && data.error) || (res.status === 402 ? 'Vercel Deployment Paused (HTTP 402): Please unpause in your Vercel Dashboard.' : `Gateway request failed (HTTP ${res.status}).`);
+      showStoreToast(errMsg, false);
       btn.disabled = false;
       btn.innerHTML = oldHtml;
       return;
