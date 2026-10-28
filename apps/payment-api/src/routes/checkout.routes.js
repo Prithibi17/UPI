@@ -112,7 +112,7 @@ function checkSessionDeviceAccess(session, req, body = null, ctx = null) {
 function sanitizePublicBranding(raw = {}) {
   // Strict explicit allowlist to prevent arbitrary internal metadata leaks (CWE-200 / OWASP A01)
   return {
-    appName: raw.appName || 'YOUPI PG',
+    appName: raw.appName || 'Moon',
     primaryColor: raw.primaryColor || '#2563eb',
     headerTheme: raw.headerTheme || 'gradient',
     logoUrl: raw.logoUrl || null,

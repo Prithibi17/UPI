@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Customer Account · YOUPI Store</title>
+  <title>Customer Account · Moon Store</title>
   <script>
     (function () {
       var p = 'system';
@@ -182,7 +182,7 @@
 <header>
   <a href="/" class="brand">
     <span class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:text-bottom; margin-right:4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-    <span>YOUPI Store</span>
+    <span>Moon Store</span>
   </a>
   <div style="display:flex; align-items:center; gap:0.65rem;">
     <button type="button" class="btn" onclick="toggleStoreTheme()" title="Toggle Theme" style="padding:0.45rem 0.85rem; font-size:0.8rem; background:var(--bg); color:var(--text); border:1px solid var(--border);">
@@ -283,7 +283,7 @@
   </div>
 </div>
 
-<!-- Universal YOUPI PG Integration SDK -->
+<!-- Universal Moon PG Integration SDK -->
 <script src="/youpi.js"></script>
 
 <script>
@@ -345,7 +345,7 @@
             checkoutUrl: data.checkoutUrl,
             order_id: data.orderId,
             amount: price,
-            name: 'YOUPI Store',
+            name: 'Moon Store',
             description: `${packName}`,
             handler: async function(paymentResponse) {
               // Direct instant credit

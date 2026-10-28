@@ -670,7 +670,7 @@ export function registerAdminRoutes(server, ctx) {
       privacyPolicyUrl,
       sellingMode,
       branding: {
-        appName: branding.appName || 'YOUPI PG',
+        appName: branding.appName || 'Moon',
         primaryColor: branding.primaryColor || '#2563eb',
         headerTheme: branding.headerTheme || 'gradient',
         logoUrl: branding.logoUrl || null,
@@ -738,7 +738,7 @@ export function registerAdminRoutes(server, ctx) {
     const inputBranding = body.branding || {};
     const mergedBranding = { ...currentBranding };
 
-    if (inputBranding.appName !== undefined) mergedBranding.appName = inputBranding.appName.trim() || currentBranding.appName || 'YOUPI PG';
+    if (inputBranding.appName !== undefined) mergedBranding.appName = inputBranding.appName.trim() || currentBranding.appName || 'Moon';
     if (inputBranding.logoUrl !== undefined) mergedBranding.logoUrl = inputBranding.logoUrl ? inputBranding.logoUrl.trim() : null;
     if (inputBranding.primaryColor !== undefined) mergedBranding.primaryColor = inputBranding.primaryColor.trim() || currentBranding.primaryColor || '#2563eb';
     if (inputBranding.sidebarNotice !== undefined) mergedBranding.sidebarNotice = inputBranding.sidebarNotice ? inputBranding.sidebarNotice.trim() : null;
@@ -958,7 +958,7 @@ export function registerAdminRoutes(server, ctx) {
       const currentBranding = merchant.branding || {};
       const mergedBranding = { ...currentBranding };
 
-      if (inputBranding.appName !== undefined) mergedBranding.appName = inputBranding.appName.trim() || currentBranding.appName || 'YOUPI PG';
+      if (inputBranding.appName !== undefined) mergedBranding.appName = inputBranding.appName.trim() || currentBranding.appName || 'Moon';
       if (inputBranding.logoUrl !== undefined) mergedBranding.logoUrl = inputBranding.logoUrl ? inputBranding.logoUrl.trim() : null;
       if (inputBranding.primaryColor !== undefined) mergedBranding.primaryColor = inputBranding.primaryColor.trim() || currentBranding.primaryColor || '#2563eb';
       if (inputBranding.headerTheme !== undefined) mergedBranding.headerTheme = inputBranding.headerTheme || 'gradient';
