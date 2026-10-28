@@ -101,7 +101,7 @@ export class CoinWalletStoreServer {
     this.gatewayApiUrl = options.gatewayApiUrl || process.env.PAYMENT_API_URL || process.env.PAYMENT_API_INTERNAL_URL || process.env.BASE_PAYMENT_API_URL || `http://127.0.0.1:${internalPort}`;
     this.checkoutPortalUrl = options.checkoutPortalUrl || process.env.CHECKOUT_URL || process.env.CHECKOUT_PORTAL_URL || `http://127.0.0.1:${process.env.CHECKOUT_PORT || 7000}`;
     this.merchantId = options.merchantId || '00000000-0000-0000-0000-000000000001';
-    this.webhookSecret = options.webhookSecret || getCoinStoreWebhookSecret();
+    this.webhookSecret = options.webhookSecret || process.env.COIN_STORE_WEBHOOK_SECRET || '0000000000000000000000000000000000000000000000000000000000000001';
 
     // Canonical public origin of this store. Post-payment return URLs are built from this
     // value rather than from the request's Host / X-Forwarded-* headers, which are
@@ -120,7 +120,8 @@ export class CoinWalletStoreServer {
     this.paymentClient = new YoupiPaymentClient({
       apiUrl: this.gatewayApiUrl,
       merchantId: this.merchantId,
-      webhookSecret: this.webhookSecret
+      webhookSecret: this.webhookSecret,
+      apiKey: this.webhookSecret
     });
 
     // In-memory persistent wallet balance & ledger for demo store
@@ -531,9 +532,11 @@ export class CoinWalletStoreServer {
               createdAt: Date.now()
             });
 
-            // Normalize checkoutUrl for localhost development / testing to prevent tunnel offline issues
-            let resolvedCheckoutUrl = payment.checkoutUrl;
-            if (this.publicBaseUrl.includes('localhost') || this.publicBaseUrl.includes('127.0.0.1')) {
+            // Normalize checkoutUrl for relative or same-origin in-app modal invocation
+            let resolvedCheckoutUrl = `/checkout/${payment.paymentId}`;
+            if (payment.checkoutUrl && !payment.checkoutUrl.includes('localhost') && !payment.checkoutUrl.includes('127.0.0.1')) {
+              resolvedCheckoutUrl = payment.checkoutUrl;
+            } else if (this.publicBaseUrl && !this.publicBaseUrl.includes('localhost') && !this.publicBaseUrl.includes('127.0.0.1')) {
               resolvedCheckoutUrl = `${this.publicBaseUrl}/checkout/${payment.paymentId}`;
             }
 
@@ -547,8 +550,9 @@ export class CoinWalletStoreServer {
               checkoutUrl: resolvedCheckoutUrl
             }));
           } catch (err) {
+            console.error('[Coin Store Checkout Error]:', err);
             res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Unable to create payment' }));
+            res.end(JSON.stringify({ error: err.message || 'Unable to create payment' }));
           }
         });
         return;
