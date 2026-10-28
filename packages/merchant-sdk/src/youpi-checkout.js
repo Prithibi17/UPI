@@ -269,7 +269,7 @@
       } else if (this.options.paymentId) {
         targetUrl = `${this.options.portalUrl}/checkout/${this.options.paymentId}`;
       } else {
-        targetUrl = `${this.options.portalUrl}/checkout/demo`;
+        targetUrl = `${this.options.portalUrl}/checkout/live`;
       }
 
       // Add embedded flag and custom params

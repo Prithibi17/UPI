@@ -250,7 +250,7 @@
       } else if (this.options.paymentId) {
         targetUrl = `${this.options.portalUrl}/checkout/${this.options.paymentId}`;
       } else {
-        targetUrl = `${this.options.portalUrl}/checkout/demo`;
+        targetUrl = `${this.options.portalUrl}/checkout/live`;
       }
 
       // If running on localhost / 127.0.0.1 and targetUrl points to remote external origin, keep path and point to local host
