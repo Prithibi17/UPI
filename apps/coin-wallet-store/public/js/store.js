@@ -101,6 +101,33 @@ function updateAmountUI() {
   if (btnDisp) btnDisp.textContent = formatted;
 }
 
+// --- IN-APP TOAST NOTIFICATIONS (Zero Browser Popups) ---
+function showStoreToast(msg, isSuccess = true) {
+  let t = document.getElementById('storeLiveToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'storeLiveToast';
+    t.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:999999; padding:12px 20px; border-radius:8px; font-weight:700; font-size:13.5px; box-shadow:0 8px 24px rgba(0,0,0,0.5); display:flex; align-items:center; gap:8px; transition:all 0.25s ease; transform:translateY(100px); opacity:0; pointer-events:none; font-family:system-ui,sans-serif;';
+    document.body.appendChild(t);
+  }
+  t.style.background = isSuccess ? '#065f46' : '#991b1b';
+  t.style.color = '#ffffff';
+  t.style.border = isSuccess ? '1px solid #10b981' : '1px solid #ef4444';
+  t.innerHTML = `${isSuccess ? '✓' : '⚠️'} ${msg}`;
+  t.style.transform = 'translateY(0)';
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => {
+    t.style.transform = 'translateY(100px)';
+    t.style.opacity = '0';
+  }, 4000);
+}
+
+// Override global alert to prevent native browser popups
+window.alert = function(msg) {
+  showStoreToast(msg, false);
+};
+
 // --- PURCHASE INITIATION (Using Official Universal YouPI Integration) ---
 async function startGatewayPurchase() {
   const btn = document.getElementById('btnInitiateCheckout');
@@ -126,7 +153,7 @@ async function startGatewayPurchase() {
 
     const data = await res.json();
     if (!res.ok || !data.checkoutUrl) {
-      alert(data.error || 'Failed to initiate checkout session.');
+      showStoreToast(data.error || 'Failed to initiate checkout session.', false);
       btn.disabled = false;
       btn.innerHTML = oldHtml;
       return;
@@ -156,7 +183,7 @@ async function startGatewayPurchase() {
       }
     });
   } catch (err) {
-    alert('Error launching YOUPI Gateway: ' + err.message);
+    showStoreToast('Error launching YOUPI Gateway: ' + err.message, false);
     btn.disabled = false;
     btn.innerHTML = oldHtml;
   }

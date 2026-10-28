@@ -6694,10 +6694,10 @@
               </p>
             </div>
             <div style="display:flex; align-items:center; gap:0.75rem;">
-              <a href="http://localhost:5000" id="btnOpenStoreLink" target="_blank" class="btn btn-secondary"
-                style="font-size:0.85rem; padding:0.6rem 1.1rem; text-decoration:none;">
-                🌐 Open Store (5000) ↗
-              </a>
+              <button type="button" id="btnOpenStoreLink" onclick="openServiceInApp('coin-wallet-store', 'YOUPI Showcase Store', 5000)" class="btn btn-secondary"
+                style="font-size:0.85rem; padding:0.6rem 1.1rem; cursor:pointer;">
+                🌐 Open Store (In-App) ↗
+              </button>
               <button class="btn btn-primary" id="btnToggleYoupiStore"
                 style="font-size:0.88rem; padding:0.65rem 1.4rem;" onclick="toggleYoupiStore()">
                 ⚡ Toggle Port 5000
@@ -8048,8 +8048,8 @@
                 <button class="btn btn-danger" style="padding:0.3rem 0.65rem; font-size:0.75rem;" onclick="stopService(${jsArg(s.id)})">⏹ Stop</button>
                 <button class="btn btn-secondary" style="padding:0.3rem 0.65rem; font-size:0.75rem;" onclick="restartService(${jsArg(s.id)})">🔄 Restart</button>
               `}
-              ${isRunning && s.port ? `
-                <a href="http://localhost:${s.port}" target="_blank" class="btn btn-secondary" style="padding:0.3rem 0.55rem; font-size:0.75rem; text-decoration:none;" title="Open in browser">↗</a>
+              ${isRunning ? `
+                <button type="button" class="btn btn-secondary" style="padding:0.3rem 0.55rem; font-size:0.75rem;" onclick="openServiceInApp(${jsArg(s.id)}, ${jsArg(s.name)}, ${s.port || 0})" title="Open inside in-app modal">↗</button>
               ` : ''}
             </div>
           </td>
@@ -8121,10 +8121,11 @@
       try {
         const res = await fetch(`/api/services/${id}/start`, { method: 'POST' });
         const data = await res.json();
-        if (!res.ok) alert(data.error || 'Failed to start service');
+        if (!res.ok) showAdminToast(data.error || 'Failed to start service', false);
+        else showAdminToast(`Service ${id} started successfully!`, true);
         loadServices();
       } catch (e) {
-        alert('Network error starting service');
+        showAdminToast('Network error starting service', false);
       }
     }
 
@@ -8132,10 +8133,11 @@
       try {
         const res = await fetch(`/api/services/${id}/stop`, { method: 'POST' });
         const data = await res.json();
-        if (!res.ok) alert(data.error || 'Failed to stop service');
+        if (!res.ok) showAdminToast(data.error || 'Failed to stop service', false);
+        else showAdminToast(`Service ${id} stopped.`, true);
         loadServices();
       } catch (e) {
-        alert('Network error stopping service');
+        showAdminToast('Network error stopping service', false);
       }
     }
 
@@ -8143,10 +8145,11 @@
       try {
         const res = await fetch(`/api/services/${id}/restart`, { method: 'POST' });
         const data = await res.json();
-        if (!res.ok) alert(data.error || 'Failed to restart service');
+        if (!res.ok) showAdminToast(data.error || 'Failed to restart service', false);
+        else showAdminToast(`Service ${id} restarted successfully!`, true);
         loadServices();
       } catch (e) {
-        alert('Network error restarting service');
+        showAdminToast('Network error restarting service', false);
       }
     }
 
@@ -8159,7 +8162,7 @@
     }
 
     async function stopAllServices() {
-      if (!confirm('Are you sure you want to stop all background gateway services? (Control supervisor will remain online).')) return;
+      if (!await inAppConfirm('Are you sure you want to stop all background gateway services? (Control supervisor will remain online).', 'Stop All Services', 'Stop All', 'Cancel', true)) return;
       try {
         await fetch('/api/services/stop-all', { method: 'POST' });
         showAdminToast('Stopping all services...');
@@ -8563,7 +8566,7 @@
     }
 
     async function promptClearAllQueue() {
-      if (!confirm('Are you sure you want to clear the entire UPI waiting queue? All currently queued sessions will be expired automatically.')) return;
+      if (!await inAppConfirm('Are you sure you want to clear the entire UPI waiting queue? All currently queued sessions will be expired automatically.', 'Clear UPI Waiting Queue', 'Clear Queue', 'Keep Queue', true)) return;
       try {
         const res = await fetch(`${API_BASE}/api/v1/admin/queue/clear`, { method: 'POST' });
         const data = await res.json();
@@ -8571,10 +8574,10 @@
           showAdminToast(`UPI Queue Cleared! Expired ${data.clearedCount || 0} queued sessions.`);
           fetchLiveData();
         } else {
-          alert(data.error || 'Failed to clear queue');
+          showAdminToast(data.error || 'Failed to clear queue', false);
         }
       } catch (e) {
-        alert('Network error clearing queue');
+        showAdminToast('Network error clearing queue', false);
       }
     }
 
@@ -8632,23 +8635,23 @@
           fetchLiveData();
           fetchCounterPayments();
         } else {
-          const err = await res.json();
-          alert(err.error || 'Failed to approve payment');
+          const err = await res.json().catch(() => ({}));
+          showAdminToast(err.error || 'Failed to approve payment', false);
         }
       } catch (e) {
-        alert('Network error confirming payment');
+        showAdminToast('Network error confirming payment', false);
       }
     }
 
     async function declineCounterPayment(paymentId, method) {
-      const reason = prompt('Reason for declining this counter payment:', 'Payment note rejected at till');
+      const reason = await inAppPrompt('Reason for declining this counter payment:', 'Payment note rejected at till', 'Decline Counter Payment', 'Decline Payment');
       if (reason === null) return;
       const operatorId = document.getElementById('operatorDisplay')?.textContent || 'Cashier Desk #1';
       try {
         const res = await fetch(`${API_BASE}/api/v1/admin/counter-decline`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ paymentId, operatorId, reason })
+          body: JSON.stringify({ paymentId, operatorId, reason: reason.trim() })
         });
         if (res.ok) {
           showAdminToast('Payment declined.');
@@ -8656,11 +8659,11 @@
           fetchLiveData();
           fetchCounterPayments();
         } else {
-          const err = await res.json();
-          alert(err.error || 'Failed to decline payment');
+          const err = await res.json().catch(() => ({}));
+          showAdminToast(err.error || 'Failed to decline payment', false);
         }
       } catch (e) {
-        alert('Network error declining payment');
+        showAdminToast('Network error declining payment', false);
       }
     }
 
@@ -8710,7 +8713,7 @@
         if (tab) tab.location.href = url; else window.open(url, '_blank');
       } catch (err) {
         if (tab) tab.close();
-        alert('Could not load the COD order details.');
+        showAdminToast('Could not load the COD order details.', false);
       }
     });
 
@@ -9252,7 +9255,7 @@
       const upiId = document.getElementById('newUpiVpa').value.trim();
       const payeeName = document.getElementById('newUpiPayee').value.trim();
       const isActive = document.getElementById('newUpiActivateNow').checked;
-      if (!upiId) return alert('Please enter a valid UPI VPA.');
+      if (!upiId) return showAdminToast('Please enter a valid UPI VPA.', false);
 
       try {
         const res = await fetch(`${API_BASE}/api/v1/admin/upi-accounts`, {
@@ -9267,10 +9270,10 @@
           document.getElementById('newUpiPayee').value = '';
           fetchGatewaySettings();
         } else {
-          alert(data.error || 'Failed to add UPI account');
+          showAdminToast(data.error || 'Failed to add UPI account', false);
         }
       } catch (e) {
-        alert('Network error adding UPI account');
+        showAdminToast('Network error adding UPI account', false);
       }
     }
 
@@ -9282,10 +9285,10 @@
           showAdminToast(`VPA "${data.activeAccount.upiId}" is now the active gateway VPA!`);
           fetchGatewaySettings();
         } else {
-          alert(data.error || 'Failed to activate UPI account');
+          showAdminToast(data.error || 'Failed to activate UPI account', false);
         }
       } catch (e) {
-        alert('Network error activating UPI account');
+        showAdminToast('Network error activating UPI account', false);
       }
     }
 
@@ -9297,7 +9300,7 @@
     }
 
     async function deleteVpa(accountId, upiId) {
-      if (!confirm(`Are you sure you want to delete VPA "${upiId}"?`)) return;
+      if (!await inAppConfirm(`Are you sure you want to delete VPA "${upiId}"?`, 'Delete Receiving VPA', 'Delete', 'Cancel', true)) return;
       try {
         const res = await fetch(`${API_BASE}/api/v1/admin/upi-accounts/${accountId}`, { method: 'DELETE' });
         if (res.ok) {
@@ -9679,7 +9682,7 @@
 
     async function startTunnelFromInput() {
       const cmd = (document.getElementById('settingTunnelCommand')?.value || '').trim();
-      if (!cmd) return alert('Please paste your Cloudflare tunnel command.');
+      if (!cmd) return showAdminToast('Please paste your Cloudflare tunnel command.', false);
       await saveTunnelSettings(cmd);
       try {
         const res = await fetch(`${API_BASE}/api/v1/admin/tunnel/start`, {
@@ -9688,13 +9691,13 @@
           body: JSON.stringify({ command: cmd })
         });
         const data = await res.json();
-        if (!res.ok) alert(`Failed to start tunnel: ${data.error || 'Unknown error'}`);
+        if (!res.ok) showAdminToast(`Failed to start tunnel: ${data.error || 'Unknown error'}`, false);
         else {
           showAdminToast('Cloudflare Tunnel command executed!');
           fetchTunnelStatus();
         }
       } catch (e) {
-        alert('Network error connecting to tunnel runner');
+        showAdminToast('Network error connecting to tunnel runner', false);
       }
     }
 
@@ -9708,7 +9711,7 @@
         showAdminToast(data.message || 'Tunnel stopped.');
         fetchTunnelStatus();
       } catch (e) {
-        alert('Network error stopping tunnel');
+        showAdminToast('Network error stopping tunnel', false);
       }
     }
 
@@ -9825,7 +9828,7 @@
     }
 
     async function unpairSmsDevice(deviceId) {
-      if (!confirm(`Are you sure you want to unpair device "${deviceId}"?`)) return;
+      if (!await inAppConfirm(`Are you sure you want to unpair device "${deviceId}"?`, 'Unpair Android Device', 'Unpair', 'Cancel', true)) return;
       try {
         const res = await fetch(`${API_BASE}/api/v1/admin/sms-gateway/devices/${deviceId}`, { method: 'DELETE' });
         if (res.ok) {
@@ -9839,7 +9842,7 @@
       const sender = (document.getElementById('testSmsSender')?.value || 'HDFCBK').trim();
       const body = (document.getElementById('testSmsBody')?.value || '').trim();
       const resBox = document.getElementById('testSmsResult');
-      if (!body) return alert('Please enter SMS text.');
+      if (!body) return showAdminToast('Please enter SMS text.', false);
 
       if (resBox) resBox.textContent = 'Dispatching test SMS...';
       try {
@@ -9955,12 +9958,12 @@
 
       } catch (err) {
         if (banner) banner.style.display = 'none';
-        alert('Error initiating Google Login: ' + err.message);
+        showAdminToast('Error initiating Google Login: ' + err.message, false);
       }
     }
 
     async function disconnectGmailAccount() {
-      if (!confirm('Are you sure you want to disconnect this Google Account? Automated email-based UPI verification will be paused until re-authorized.')) {
+      if (!await inAppConfirm('Are you sure you want to disconnect this Google Account? Automated email-based UPI verification will be paused until re-authorized.', 'Disconnect Gmail Observer', 'Disconnect Account', 'Keep Connected', true)) {
         return;
       }
 
@@ -9976,11 +9979,11 @@
           if (box) box.style.display = 'none';
           await fetchGmailCredentials();
         } else {
-          const d = await res.json();
-          alert(d.error || 'Failed to disconnect account');
+          const d = await res.json().catch(() => ({}));
+          showAdminToast(d.error || 'Failed to disconnect account', false);
         }
       } catch (e) {
-        alert('Network error disconnecting Google Account');
+        showAdminToast('Network error disconnecting Google Account', false);
       }
     }
 
@@ -10075,11 +10078,11 @@
           showAdminToast('Gmail API credentials saved successfully!');
           fetchGmailCredentials();
         } else {
-          const d = await res.json();
-          alert(d.error || 'Failed to save Gmail credentials');
+          const d = await res.json().catch(() => ({}));
+          showAdminToast(d.error || 'Failed to save Gmail credentials', false);
         }
       } catch (e) {
-        alert('Network error saving Gmail credentials');
+        showAdminToast('Network error saving Gmail credentials', false);
       }
     }
 
@@ -10237,7 +10240,7 @@
         });
         await fetchWhatsAppStatus();
       } catch (e) {
-        alert('Network error initiating WhatsApp pairing');
+        showAdminToast('Network error initiating WhatsApp pairing', false);
       } finally {
         btn.disabled = false;
         btn.innerText = oldText;
@@ -10245,7 +10248,7 @@
     }
 
     async function disconnectWhatsApp() {
-      if (!confirm('Disconnect WhatsApp session and wipe credentials?')) return;
+      if (!await inAppConfirm('Disconnect WhatsApp session and wipe credentials?', 'Disconnect WhatsApp Session', 'Disconnect', 'Cancel', true)) return;
       try {
         await fetch(`${API_BASE}/api/v1/admin/whatsapp/disconnect`, { method: 'POST' });
         await fetchWhatsAppStatus();
@@ -10412,6 +10415,208 @@
         t.style.transform = 'translateY(100px)';
         t.style.opacity = '0';
       }, 4000);
+    }
+
+    // --- UNIVERSAL IN-APP MODAL DIALOGS (Zero Native Browser Popups) ---
+    function getInAppDialogContainer() {
+      let overlay = document.getElementById('inAppDialogOverlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'inAppDialogOverlay';
+        overlay.style.cssText = 'position:fixed; inset:0; z-index:2147483640; background:rgba(15,23,42,0.8); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:16px; font-family:var(--font-sans, system-ui, sans-serif);';
+        overlay.innerHTML = `
+          <div id="inAppDialogCard" style="background:#0f172a; border:1px solid rgba(255,255,255,0.12); border-radius:14px; max-width:440px; width:100%; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7); overflow:hidden;">
+            <div style="padding:1.25rem 1.5rem 0.5rem; display:flex; align-items:center; gap:0.75rem;">
+              <span id="inAppDialogIcon" style="font-size:1.4rem;">🔔</span>
+              <h3 id="inAppDialogTitle" style="margin:0; font-size:1.1rem; color:#ffffff; font-weight:700;">Notification</h3>
+            </div>
+            <div style="padding:0.75rem 1.5rem 1rem;">
+              <p id="inAppDialogMessage" style="margin:0 0 1rem; font-size:0.9rem; color:#94a3b8; line-height:1.5; white-space:pre-wrap;"></p>
+              <div id="inAppDialogInputWrapper" style="display:none; margin-bottom:1rem;">
+                <input id="inAppDialogInput" type="text" style="width:100%; box-sizing:border-box; background:#070c17; border:1px solid #334155; border-radius:8px; padding:0.6rem 0.8rem; color:#f8fafc; font-size:0.9rem; outline:none;" />
+              </div>
+            </div>
+            <div id="inAppDialogFooter" style="background:#0b1120; border-top:1px solid rgba(255,255,255,0.06); padding:0.85rem 1.5rem; display:flex; justify-content:flex-end; gap:0.6rem;">
+              <button id="inAppDialogCancelBtn" class="btn btn-secondary" style="font-size:0.85rem; padding:0.5rem 1rem;">Cancel</button>
+              <button id="inAppDialogConfirmBtn" class="btn btn-primary" style="font-size:0.85rem; padding:0.5rem 1.2rem;">OK</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+      }
+      return overlay;
+    }
+
+    function inAppAlert(message, title = 'Notice', icon = 'ℹ️') {
+      return new Promise((resolve) => {
+        const overlay = getInAppDialogContainer();
+        document.getElementById('inAppDialogIcon').textContent = icon;
+        document.getElementById('inAppDialogTitle').textContent = title;
+        document.getElementById('inAppDialogMessage').textContent = message;
+        document.getElementById('inAppDialogInputWrapper').style.display = 'none';
+        
+        const cancelBtn = document.getElementById('inAppDialogCancelBtn');
+        const confirmBtn = document.getElementById('inAppDialogConfirmBtn');
+        cancelBtn.style.display = 'none';
+        confirmBtn.className = 'btn btn-primary';
+        confirmBtn.textContent = 'OK';
+
+        const cleanup = () => {
+          overlay.style.display = 'none';
+          confirmBtn.onclick = null;
+          resolve();
+        };
+
+        confirmBtn.onclick = cleanup;
+        overlay.style.display = 'flex';
+        confirmBtn.focus();
+      });
+    }
+
+    function inAppConfirm(message, title = 'Please Confirm', confirmText = 'Confirm', cancelText = 'Cancel', isDanger = true) {
+      return new Promise((resolve) => {
+        const overlay = getInAppDialogContainer();
+        document.getElementById('inAppDialogIcon').textContent = isDanger ? '⚠️' : '❓';
+        document.getElementById('inAppDialogTitle').textContent = title;
+        document.getElementById('inAppDialogMessage').textContent = message;
+        document.getElementById('inAppDialogInputWrapper').style.display = 'none';
+
+        const cancelBtn = document.getElementById('inAppDialogCancelBtn');
+        const confirmBtn = document.getElementById('inAppDialogConfirmBtn');
+        cancelBtn.style.display = 'inline-block';
+        cancelBtn.textContent = cancelText;
+        confirmBtn.className = isDanger ? 'btn btn-danger' : 'btn btn-primary';
+        confirmBtn.textContent = confirmText;
+
+        cancelBtn.onclick = () => {
+          overlay.style.display = 'none';
+          cancelBtn.onclick = null;
+          confirmBtn.onclick = null;
+          resolve(false);
+        };
+
+        confirmBtn.onclick = () => {
+          overlay.style.display = 'none';
+          cancelBtn.onclick = null;
+          confirmBtn.onclick = null;
+          resolve(true);
+        };
+
+        overlay.style.display = 'flex';
+        confirmBtn.focus();
+      });
+    }
+
+    function inAppPrompt(message, defaultValue = '', title = 'Input Required', confirmText = 'Submit') {
+      return new Promise((resolve) => {
+        const overlay = getInAppDialogContainer();
+        document.getElementById('inAppDialogIcon').textContent = '✏️';
+        document.getElementById('inAppDialogTitle').textContent = title;
+        document.getElementById('inAppDialogMessage').textContent = message;
+        
+        const inputWrap = document.getElementById('inAppDialogInputWrapper');
+        const input = document.getElementById('inAppDialogInput');
+        inputWrap.style.display = 'block';
+        input.value = defaultValue;
+
+        const cancelBtn = document.getElementById('inAppDialogCancelBtn');
+        const confirmBtn = document.getElementById('inAppDialogConfirmBtn');
+        cancelBtn.style.display = 'inline-block';
+        cancelBtn.textContent = 'Cancel';
+        confirmBtn.className = 'btn btn-primary';
+        confirmBtn.textContent = confirmText;
+
+        const onConfirm = () => {
+          const val = input.value;
+          overlay.style.display = 'none';
+          cancelBtn.onclick = null;
+          confirmBtn.onclick = null;
+          input.onkeydown = null;
+          resolve(val);
+        };
+
+        cancelBtn.onclick = () => {
+          overlay.style.display = 'none';
+          cancelBtn.onclick = null;
+          confirmBtn.onclick = null;
+          input.onkeydown = null;
+          resolve(null);
+        };
+
+        confirmBtn.onclick = onConfirm;
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            onConfirm();
+          } else if (e.key === 'Escape') {
+            cancelBtn.click();
+          }
+        };
+
+        overlay.style.display = 'flex';
+        input.focus();
+        input.select();
+      });
+    }
+
+    // Override global alert to always render in-app toast
+    window.alert = function(msg) {
+      showAdminToast(msg, false);
+    };
+
+    // --- IN-APP SERVICE & APPLICATION PREVIEW MODAL ---
+    function openInAppPreview(url, title = 'Application Preview') {
+      let modal = document.getElementById('inAppPreviewModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'inAppPreviewModal';
+        modal.style.cssText = 'position:fixed; inset:0; z-index:2147483645; background:rgba(7,12,23,0.85); backdrop-filter:blur(8px); display:none; align-items:center; justify-content:center; padding:16px; font-family:var(--font-sans, system-ui, sans-serif);';
+        modal.innerHTML = `
+          <div style="background:#0f172a; border:1px solid rgba(255,255,255,0.15); border-radius:16px; width:95%; max-width:1100px; height:90vh; max-height:850px; display:flex; flex-direction:column; box-shadow:0 30px 60px rgba(0,0,0,0.8); overflow:hidden;">
+            <div style="padding:0.75rem 1.25rem; background:#070c17; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:space-between;">
+              <div style="display:flex; align-items:center; gap:0.6rem;">
+                <span style="font-size:1.1rem;">📱</span>
+                <strong id="inAppPreviewTitle" style="font-size:0.95rem; color:#ffffff;">Preview</strong>
+                <span style="font-size:0.72rem; color:#38bdf8; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.25); border-radius:4px; padding:2px 6px; font-weight:700;">IN-APP MODAL</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <button onclick="closeInAppPreview()" class="btn btn-secondary" style="padding:0.35rem 0.75rem; font-size:0.8rem;" title="Close Modal">✕ Close</button>
+              </div>
+            </div>
+            <div style="flex:1; width:100%; height:100%; position:relative; background:#020617;">
+              <iframe id="inAppPreviewIframe" src="about:blank" style="width:100%; height:100%; border:none;" allow="payment; clipboard-read; clipboard-write"></iframe>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+      document.getElementById('inAppPreviewTitle').textContent = title;
+      const iframe = document.getElementById('inAppPreviewIframe');
+      iframe.src = url;
+      modal.style.display = 'flex';
+    }
+
+    function closeInAppPreview() {
+      const modal = document.getElementById('inAppPreviewModal');
+      if (modal) {
+        modal.style.display = 'none';
+        const iframe = document.getElementById('inAppPreviewIframe');
+        if (iframe) iframe.src = 'about:blank';
+      }
+    }
+
+    function openServiceInApp(id, name, port) {
+      let targetPath = '';
+      if (id === 'coin-wallet-store') targetPath = '/store';
+      else if (id === 'checkout-portal') targetPath = '/checkout/demo';
+      else if (id === 'payment-help') targetPath = '/help';
+      else if (id === 'payment-api') targetPath = '/health';
+      else if (id === 'merchant-admin') targetPath = '/admin';
+      else targetPath = '/api/services';
+
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const url = (isLocal && port && targetPath === '') ? `http://localhost:${port}` : targetPath;
+      openInAppPreview(url, `${name} (In-App Preview)`);
     }
 
     // --- DEVELOPER SETTINGS: FALSE NARRATIVE LOGIC (AUTO-EXPIRES IN 10 MINUTES) ---
@@ -11682,7 +11887,7 @@
       }
 
       if (!reason) {
-        return alert('A mandatory reason is required to unban a customer.');
+        return showAdminToast('A mandatory reason is required to unban a customer.', false);
       }
 
       const btn = document.getElementById('btnConfirmUnbanAction');
@@ -11707,10 +11912,10 @@
           fetchSecurityEvents();
           fetchSecurityHistory();
         } else {
-          alert(data.error || 'Failed to unban customer');
+          showAdminToast(data.error || 'Failed to unban customer', false);
         }
       } catch (e) {
-        alert('Network error unbanning customer');
+        showAdminToast('Network error unbanning customer', false);
       } finally {
         if (btn) { btn.disabled = false; btn.textContent = 'Confirm Unban'; }
       }
@@ -11770,10 +11975,10 @@
       const notes = (notesInput?.value || '').trim();
 
       if (!customerId) {
-        return alert('Please select a customer or enter a Customer ID / Phone / Email.');
+        return showAdminToast('Please select a customer or enter a Customer ID / Phone / Email.', false);
       }
       if (!reason) {
-        return alert('Mandatory ban reason is required.');
+        return showAdminToast('Mandatory ban reason is required.', false);
       }
 
       try {
@@ -11790,10 +11995,10 @@
           fetchSecurityEvents();
           fetchSecurityHistory();
         } else {
-          alert(data.error || 'Failed to ban customer');
+          showAdminToast(data.error || 'Failed to ban customer', false);
         }
       } catch (e) {
-        alert('Network error executing manual ban');
+        showAdminToast('Network error executing manual ban', false);
       }
     }
 
