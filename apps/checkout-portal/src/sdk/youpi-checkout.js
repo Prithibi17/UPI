@@ -253,11 +253,13 @@
         targetUrl = `${this.options.portalUrl}/checkout/live`;
       }
 
-      // If running on localhost / 127.0.0.1 and targetUrl points to remote external origin, keep path and point to local host
-      if (isBrowser && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      // If targetUrl points to remote external origin, internal Vercel infra, or localhost, resolve to appropriate origin
+      if (isBrowser) {
         try {
           const parsed = new URL(targetUrl, window.location.origin);
-          if (parsed.hostname !== 'localhost' && parsed.hostname !== '127.0.0.1' && !this.options.portalUrl) {
+          if (parsed.hostname.includes('services.vercel-infra.com')) {
+            targetUrl = `${window.location.protocol}//${window.location.host}${parsed.pathname}${parsed.search}`;
+          } else if ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && parsed.hostname !== 'localhost' && parsed.hostname !== '127.0.0.1' && !this.options.portalUrl) {
             targetUrl = `${window.location.protocol}//${window.location.host}${parsed.pathname}${parsed.search}`;
           }
         } catch {}
@@ -313,11 +315,22 @@
     }
 
     _injectModal(targetUrl) {
+      if (isBrowser && typeof targetUrl === 'string' && targetUrl.includes('services.vercel-infra.com')) {
+        try {
+          const parsed = new URL(targetUrl, window.location.origin);
+          targetUrl = `${window.location.protocol}//${window.location.host}${parsed.pathname}${parsed.search}`;
+        } catch {}
+      }
+
       const backdrop = document.createElement('div');
       backdrop.className = 'youpi-checkout-backdrop';
 
       const container = document.createElement('div');
       container.className = 'youpi-checkout-container';
+
+      const loader = document.createElement('div');
+      loader.className = 'youpi-checkout-loader';
+      loader.innerHTML = '<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;"><img src="/icons/moon-logo.png" alt="Moon" style="width:48px; height:48px; border-radius:12px; object-fit:contain;" /><div style="display:flex; align-items:center; gap:8px; font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif; font-size:13px; font-weight:600; color:#475569;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:youpiSpin 0.8s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg>Loading Moon PG...</div></div>';
 
       const closeBtn = document.createElement('button');
       closeBtn.className = 'youpi-checkout-close-btn';
@@ -340,11 +353,16 @@
       const iframe = document.createElement('iframe');
       iframe.className = 'youpi-checkout-iframe';
       iframe.src = targetUrl;
+      iframe.onload = () => {
+        loader.style.opacity = '0';
+        setTimeout(() => { try { loader.remove(); } catch(e){} }, 150);
+      };
       // Only messages from this exact iframe/origin are trusted (see _handleMessage).
       this._iframe = iframe;
       try { this._iframeOrigin = new URL(targetUrl, window.location.href).origin; } catch { this._iframeOrigin = null; }
       iframe.allow = 'payment';
 
+      container.appendChild(loader);
       container.appendChild(closeBtn);
       container.appendChild(iframe);
       backdrop.appendChild(container);
@@ -670,6 +688,20 @@
         }
         .youpi-checkout-container.closing {
           transform: translateY(20px) scale(0.96);
+        }
+        @keyframes youpiSpin {
+          to { transform: rotate(360deg); }
+        }
+        .youpi-checkout-loader {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #ffffff;
+          z-index: 5;
+          transition: opacity 0.15s ease;
+          pointer-events: none;
         }
         .youpi-checkout-iframe {
           width: 100%;

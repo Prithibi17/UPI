@@ -21,12 +21,20 @@ export function registerPaymentRoutes(server, ctx) {
     if (merchant?.branding) {
       try {
         const urls = resolveRuntimeUrls(merchant.branding);
-        if (urls && urls.checkoutUrl) return urls.checkoutUrl;
+        if (urls && urls.checkoutUrl && !urls.checkoutUrl.includes('services.vercel-infra.com')) return urls.checkoutUrl;
       } catch {}
     }
-    if (req && req.headers && req.headers.host && !req.headers.host.includes(':6100') && !req.headers.host.includes('127.0.0.1')) {
+    const forwardedHost = req?.headers?.['x-forwarded-host'];
+    if (forwardedHost && !forwardedHost.includes('services.vercel-infra.com') && !forwardedHost.includes(':6100')) {
+      const proto = req.headers['x-forwarded-proto'] || 'https';
+      return `${proto}://${forwardedHost}`;
+    }
+    if (req && req.headers && req.headers.host && !req.headers.host.includes(':6100') && !req.headers.host.includes('127.0.0.1') && !req.headers.host.includes('services.vercel-infra.com')) {
       const proto = req.headers['x-forwarded-proto'] || (req.headers.host.includes('localhost') ? 'http' : 'https');
       return `${proto}://${req.headers.host}`;
+    }
+    if (process.env.CHECKOUT_URL && !process.env.CHECKOUT_URL.includes('services.vercel-infra.com')) {
+      return process.env.CHECKOUT_URL.replace(/\/+$/, '');
     }
     return ctx.checkoutBaseUrl || 'http://localhost:7000';
   }

@@ -136,7 +136,7 @@ async function startGatewayPurchase() {
   const btn = document.getElementById('btnInitiateCheckout');
   const oldHtml = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = '<span>⏳ Preparing Gateway Session...</span>';
+  btn.innerHTML = '<span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; animation:spin 1s linear infinite; margin-right:4px;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="12"/></svg>Preparing Gateway Session...</span>';
 
   try {
     const orderId = `COIN-ORD-${Date.now()}`;
@@ -155,16 +155,21 @@ async function startGatewayPurchase() {
     });
 
     const data = await res.json();
-    if (!res.ok || !data.checkoutUrl) {
+    if (!res.ok || (!data.checkoutUrl && !data.paymentId)) {
       showStoreToast(data.error || 'Failed to initiate checkout session.', false);
       btn.disabled = false;
       btn.innerHTML = oldHtml;
       return;
     }
 
+    let finalCheckoutUrl = data.checkoutUrl || `/checkout/${data.paymentId}`;
+    if (finalCheckoutUrl.includes('services.vercel-infra.com')) {
+      finalCheckoutUrl = `/checkout/${data.paymentId}`;
+    }
+
     // 2. Launch checkout modal using official Youpi.pay() SDK
     window.Youpi.pay({
-      checkoutUrl: data.checkoutUrl,
+      checkoutUrl: finalCheckoutUrl,
       order_id: data.orderId,
       amount: currentAmount,
       currency: 'INR',

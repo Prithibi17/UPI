@@ -534,10 +534,12 @@ export class CoinWalletStoreServer {
 
             // Normalize checkoutUrl for relative or same-origin in-app modal invocation
             let resolvedCheckoutUrl = `/checkout/${payment.paymentId}`;
-            if (payment.checkoutUrl && !payment.checkoutUrl.includes('localhost') && !payment.checkoutUrl.includes('127.0.0.1')) {
+            if (payment.checkoutUrl && !payment.checkoutUrl.includes('localhost') && !payment.checkoutUrl.includes('127.0.0.1') && !payment.checkoutUrl.includes('services.vercel-infra.com')) {
               resolvedCheckoutUrl = payment.checkoutUrl;
-            } else if (this.publicBaseUrl && !this.publicBaseUrl.includes('localhost') && !this.publicBaseUrl.includes('127.0.0.1')) {
+            } else if (this.publicBaseUrl && !this.publicBaseUrl.includes('localhost') && !this.publicBaseUrl.includes('127.0.0.1') && !this.publicBaseUrl.includes('services.vercel-infra.com')) {
               resolvedCheckoutUrl = `${this.publicBaseUrl}/checkout/${payment.paymentId}`;
+            } else {
+              resolvedCheckoutUrl = `/checkout/${payment.paymentId}`;
             }
 
             res.writeHead(200, {
