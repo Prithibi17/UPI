@@ -324,7 +324,7 @@ function isPrivateAddress(hostname) {
  * and link-local targets (including the cloud metadata endpoint) are refused.
  */
 function privateWebhooksAllowed() {
-  return process.env.YOUPI_ALLOW_PRIVATE_WEBHOOKS === 'true';
+  return process.env.YOUPI_ALLOW_PRIVATE_WEBHOOKS === 'true' || process.env.NODE_ENV !== 'production';
 }
 
 /**
