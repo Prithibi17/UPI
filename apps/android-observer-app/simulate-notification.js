@@ -12,7 +12,7 @@ const ENROLLMENT_SECRET = resolveSecret('android_enrollment_secret', 'ANDROID_EN
 
 async function main() {
   console.log('========================================================');
-  console.log('📱 YOUPI Android Payment Observer Notification Simulator');
+  console.log('[DEVICE] YOUPI Android Payment Observer Notification Simulator');
   console.log('========================================================');
 
   const driver = new AndroidObserverDriver({
@@ -24,12 +24,12 @@ async function main() {
   // Step 1: Pair simulated device
   console.log('\n[1/3] Enrolling & Pairing Android Device with Gateway...');
   const pairData = await driver.pair(ENROLLMENT_SECRET);
-  console.log(`[✓] Device Paired! Assigned ID: ${pairData.deviceId}`);
+  console.log(`[[SUCCESS]] Device Paired! Assigned ID: ${pairData.deviceId}`);
 
   // Step 2: Send Heartbeat
   console.log('\n[2/3] Emitting Liveness Heartbeat...');
   const hb = await driver.sendHeartbeat();
-  console.log(`[✓] Heartbeat Acknowledged at: ${hb.timestamp}`);
+  console.log(`[[SUCCESS]] Heartbeat Acknowledged at: ${hb.timestamp}`);
 
   // Step 3: Simulate Incoming UPI Notification
   console.log('\n[3/3] Simulating Incoming PhonePe UPI Notification...');
@@ -54,9 +54,9 @@ async function main() {
   console.log(`========================================================`);
 
   if (result.status === 200) {
-    console.log('🟢 Observation successfully recorded and fed into Attribution Engine!');
+    console.log('[ACTIVE] Observation successfully recorded and fed into Attribution Engine!');
   } else {
-    console.log('🔴 Observation was rejected or failed.');
+    console.log('[STOPPED] Observation was rejected or failed.');
   }
 }
 

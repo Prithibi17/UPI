@@ -6,7 +6,7 @@
         <div class="ypg-pc-topbar-actions" style="position: relative;">
           <button type="button" class="ypg-pc-btn-more" id="btnPcMore" onclick="toggleAccountMenu(event)" title="Options">•••</button>
           <button type="button" class="ypg-pc-btn-close" onclick="openCancelPaymentModal()"
-            title="Close Checkout">✕</button>
+            title="Close Checkout" style="display:inline-flex; align-items:center; justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
 
           <!-- PC Account Popover Menu -->
           <div class="ypg-account-popover" id="accountMenuPopoverPc" hidden style="position: absolute; top: 40px; right: 0; background: #ffffff; color: var(--ypg-text-dark); border-radius: 12px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18); border: 1px solid var(--ypg-border); padding: 8px; z-index: 1000; min-width: 220px;">
@@ -14,14 +14,14 @@
               style="padding:6px 10px 8px 10px; font-weight:700; font-size:12px; border-bottom:1px solid #f1f5f9; color:#0f172a; word-break:break-word;">
               Guest User</div>
             <button type="button" class="ypg-popover-item" onclick="promptSignInModal()" style="color:#0c6cf2;">
-              <span>📱</span> Sign In (Optional)
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> Sign In (Optional)
             </button>
             <button type="button" class="ypg-popover-item" onclick="openHelpModal()">
-              <span>❓</span> Help & Support
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Help &amp; Support
             </button>
             <button type="button" class="ypg-popover-item" onclick="handleCustomerLogout()"
               style="color:var(--ypg-danger);">
-              <span>🚪</span> Sign Out / Reset Guest
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sign Out / Reset Guest
             </button>
           </div>
         </div>
@@ -91,14 +91,14 @@
             style="padding:4px 8px 8px 8px; font-weight:700; font-size:12px; border-bottom:1px solid #f1f5f9; color:#0f172a;">
             Guest User</div>
           <button type="button" class="ypg-popover-item" onclick="promptSignInModal()" style="color:#0c6cf2;">
-            <span>📱</span> Sign In (Optional)
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> Sign In (Optional)
           </button>
           <button type="button" class="ypg-popover-item" onclick="openHelpModal()">
-            <span>❓</span> Help & Support
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Help &amp; Support
           </button>
           <button type="button" class="ypg-popover-item" onclick="handleCustomerLogout()"
             style="color:var(--ypg-danger);">
-            <span>🚪</span> Sign Out / Reset Guest
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:6px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sign Out / Reset Guest
           </button>
         </div>
       </header>

@@ -3,31 +3,31 @@ let currentAmount = 1.00;
 const photos = [
   {
     url: '/assets/gateway_pc_checkout.png?v=2',
-    badge: '💻 Desktop 2-Column Checkout',
+    badge: 'Desktop 2-Column Checkout',
     title: 'Desktop 2-Column Checkout',
     desc: 'Authentic desktop 2-column checkout frame with real-time dynamic QR, clean card at counter, live order summary, and verified merchant branding.'
   },
   {
     url: '/assets/gateway_mobile_checkout.png?v=2',
-    badge: '📱 Mobile Instant Sheet & UPI Intent',
+    badge: 'Mobile Instant Sheet & UPI Intent',
     title: 'Mobile Instant Sheet & UPI Intent',
     desc: 'Native fluid mobile checkout bottom sheet with instant UPI app deep-linking (GPay, PhonePe, Paytm, CRED).'
   },
   {
     url: '/assets/gateway_merchant_operations.png?v=2',
-    badge: '📊 Merchant Operations & Live Slots Hub',
+    badge: 'Merchant Operations & Live Slots Hub',
     title: 'Merchant Operations & Live Slots Hub',
     desc: 'Crisp bright white operations dashboard with real-time slot allocation, floating cashier till dock, and observers status.'
   },
   {
     url: '/assets/gateway_developer_dark_hub.png?v=2',
-    badge: '🌙 Developer Hub (Real Dark Mode)',
+    badge: 'Developer Hub (Real Dark Mode)',
     title: 'Developer Hub (Real Dark Mode)',
     desc: 'Authentic obsidian real dark mode with multi-service supervisor, live host ports, and aggregate streaming terminal.'
   },
   {
     url: '/assets/gateway_whitelabel_customizer.png?v=2',
-    badge: '🎨 White-Label Customizer & Mockup',
+    badge: 'White-Label Customizer & Mockup',
     title: 'White-Label Customizer & Mockup',
     desc: 'Live smartphone reflection with instant brand logo, custom color palette, trust seals, and conversion banners.'
   }
@@ -113,7 +113,10 @@ function showStoreToast(msg, isSuccess = true) {
   t.style.background = isSuccess ? '#065f46' : '#991b1b';
   t.style.color = '#ffffff';
   t.style.border = isSuccess ? '1px solid #10b981' : '1px solid #ef4444';
-  t.innerHTML = `${isSuccess ? '✓' : '⚠️'} ${msg}`;
+  const iconSvg = isSuccess
+    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>'
+    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+  t.innerHTML = `${iconSvg}${msg}`;
   t.style.transform = 'translateY(0)';
   t.style.opacity = '1';
   clearTimeout(t._timer);

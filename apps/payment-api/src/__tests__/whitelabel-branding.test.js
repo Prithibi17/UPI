@@ -42,7 +42,7 @@ describe('White-Label Branding & Visual Gateway Customizer Test Suite', () => {
       logoUrl: 'https://aurapay.io/logo.svg',
       trustBadgeText: 'AuraPay Certified Merchant',
       hideTrustBadge: false,
-      subbannerText: '⚡ 100% Instant Bank Verification',
+      subbannerText: '100% Instant Bank Verification',
       hideSubbanner: false,
       hidePoweredBy: true,
       hideTimeSavingBanner: true,
@@ -78,7 +78,7 @@ describe('White-Label Branding & Visual Gateway Customizer Test Suite', () => {
     assert.strictEqual(b.logoUrl, 'https://aurapay.io/logo.svg');
     assert.strictEqual(b.trustBadgeText, 'AuraPay Certified Merchant');
     assert.strictEqual(b.hideTrustBadge, false);
-    assert.strictEqual(b.subbannerText, '⚡ 100% Instant Bank Verification');
+    assert.strictEqual(b.subbannerText, '100% Instant Bank Verification');
     assert.strictEqual(b.hideSubbanner, false);
     assert.strictEqual(b.hidePoweredBy, true);
     assert.strictEqual(b.hideTimeSavingBanner, true);

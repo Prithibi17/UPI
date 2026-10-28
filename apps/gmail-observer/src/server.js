@@ -332,7 +332,7 @@ export class GmailObserverServer {
             </head>
             <body>
               <div class="card">
-                <div class="icon-badge">✅</div>
+                <div class="icon-badge">[OK]</div>
                 <h1>Google Account Connected</h1>
                 <p>Your Gmail account has been successfully authorized for real-time UPI payment verification.</p>
                 <div class="email-box">${userEmail}</div>
